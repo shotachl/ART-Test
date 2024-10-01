@@ -59,6 +59,7 @@ class App {
 };
 
  onTouchMove = (event) => {
+    if (!this.lastClone) return;
     const touch = event.changedTouches[0];
 
     const currentTouchX = touch.clientX;
@@ -67,8 +68,8 @@ class App {
     const deltaX = currentTouchX - (this.touchX || currentTouchX);
     const deltaY = currentTouchY - (this.touchY || currentTouchY);
 
-    this.scene.children[4].rotation.y += deltaX * 0.01;
-    this.scene.children[4].rotation.x += deltaY * 0.01;
+    this.lastClone.rotation.y += deltaX * 0.01;
+    this.lastClone.rotation.x += deltaY * 0.01;
 
     // Update debug info if needed
     // document.getElementById("test2").innerHTML = `DeltaX: ${deltaX}, DeltaY: ${deltaY}`;
@@ -87,8 +88,11 @@ class App {
       
       const scaleFactor = touchDistance / this.touchStartDistance;
 
-      const object = this.scene.children[4];
-      object.scale.set(object.scale.x * scaleFactor, object.scale.y * scaleFactor, object.scale.z * scaleFactor);
+      this.lastClone.scale.set(
+        this.lastClone.scale.x * scaleFactor, 
+        this.lastClone.scale.y * scaleFactor, 
+        this.lastClone.scale.z * scaleFactor
+      );
 
       // const head = this.scene.children[1];
       // head.scale.set(object.scale.x * scaleFactor, object.scale.y * scaleFactor, object.scale.z * scaleFactor);
