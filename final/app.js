@@ -35,6 +35,7 @@ class App {
     this.scene.add(this.reticle);
     this.touchX;
     this.lastTouchX;
+    this.buttonClicked = false;
     this.button = document.getElementById("buttonid");
 
     // We'll update the camera matrices directly from API, so
@@ -112,13 +113,16 @@ class App {
     this.touchY = null;
   }
 
-  onButtonClick = () => {
+  onButtonClick = (event) => {
+    this.buttonClicked = true;
+    event.stopPropagation()
     this.scene.remove(this.lastClone);
     this.lastClone = null;
     clicks = 0;
 
     if(this.lastClone = null && clicks == 0){
       this.reticle.visible = true;
+      this.button.style.display = "none";
     }
   }
 
@@ -184,11 +188,18 @@ class App {
   }
 
   /** Place a sunflower when the screen is tapped. */
-  onSelect = () => {
+  onSelect = (event) => {
+    if (this.buttonClicked) {
+      this.buttonClicked = false; // Reset the flag for future clicks
+      return;
+  }
+
+    if (event.target.id === "buttonid") return;
+
     if (window.sunflower && this.reticle.visible == true) {
       const clone = window.sunflower.clone();
       clone.position.copy(this.reticle.position);
-      clone.scale.set(0.3,0.3,0.3);
+      clone.scale.set(0.2,0.2,0.2);
 
       clone.traverse((child) => {
         if (child.material && child.material.name === "rp_nathan_animated_003_mat.006") {
