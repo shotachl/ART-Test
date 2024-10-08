@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-body {
+ body {
   font-family: monospace;
   margin: 0;
   overflow: hidden;
@@ -129,4 +129,57 @@ body.ar.stabilized #stabilization {
   width: 80px;
   height: 80px;
   line-height: 38px; 
+}
+
+#sidebarButton {
+  border: none; /* Remove border */
+  border-radius: 20%;
+  background-color: #0a6bff; /* Match #buttonid background color */
+  color: #fff; /* Text color */
+  cursor: pointer;
+  font-size: 20px; /* Font size */
+  padding: 8px 14px; /* Increase padding for larger button */
+  text-align: center; /* Center text */
+  user-select: none; /* Prevent text selection */
+  -webkit-user-select: none; /* Prevent text selection for webkit browsers */
+  touch-action: manipulation; /* Prevent default touch actions */
+  transition: all .2s cubic-bezier(.22, .61, .36, 1); /* Smooth transition */
+  position: fixed; /* Fixed position */
+  top: 20px; /* Space from the top */
+  left: 20px; /* Space from the left */
+  width: auto; /* Width based on content */
+  height: auto; /* Height based on content */
+  line-height: 1.5; /* Line height for text */
+}
+
+.sidebar {
+  position: fixed;
+  top: -100%; /* Start off-screen */
+  left: 0;
+  right: 0;
+  background-color: #0a6bff;
+  padding: 20px;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: top 0.3s ease; /* Animation for sliding in */
+  z-index: 1000; /* Ensure it appears above other content */
+}
+
+.sidebar.show {
+  top: 0; /* Slide down */
+}
+
+.close-btn {
+  border: none;
+  background-color: transparent;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  float: right; /* Align close button to the right */
+}
+
+.menu-item {
+  padding: 10px 0;
+  font-size: 18px;
+  cursor: pointer;
 }

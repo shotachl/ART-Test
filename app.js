@@ -1,6 +1,7 @@
 (async function() {
   const isArSessionSupported = navigator.xr && navigator.xr.isSessionSupported && await navigator.xr.isSessionSupported("immersive-ar");
   document.getElementById("buttonid").style.display = "none";
+  document.getElementById("sidebarButton").style.display = "none";
   if (isArSessionSupported) {
     document.getElementById("enter-ar").addEventListener("click", window.app.activateXR)
   } else {
@@ -37,6 +38,9 @@ class App {
     this.lastTouchX;
     this.buttonClicked = false;
     this.button = document.getElementById("buttonid");
+    this.setupSidebar();
+    this.sidebar = document.getElementById("sidebar");
+    this.sidebarButton = document.getElementById("sidebarButton")
 
     // We'll update the camera matrices directly from API, so
     // disable matrix auto updates so three.js doesn't attempt
@@ -48,6 +52,24 @@ class App {
     document.addEventListener('touchmove', this.onTouchMove);
     document.addEventListener('touchend', this.onTouchEnd);
     this.button.addEventListener('click', this.onButtonClick);
+
+    this.sidebarButton.style.display = "block";
+  }
+
+  setupSidebar() {
+    // Open sidebar function
+    this.openSidebar = () => {
+      this.sidebar.classList.add("show");
+    };
+
+    // Close sidebar function
+    this.closeSidebar = () => {
+      this.sidebar.classList.remove("show");
+    };
+
+    // Event listeners for the sidebar button and close button
+    document.getElementById("sidebarButton").addEventListener("click", this.openSidebar);
+    document.getElementById("closeSidebar").addEventListener("click", this.closeSidebar);
   }
 
   onTouchStart = (event) => {
@@ -122,7 +144,6 @@ class App {
 
     if(this.lastClone = null && clicks == 0){
       this.reticle.visible = true;
-      this.button.style.display = "none";
     }
   }
 
@@ -159,6 +180,13 @@ class App {
     this.xrSession.updateRenderState({
       baseLayer: new XRWebGLLayer(this.xrSession, this.gl)
     });
+
+    this.canvas.addEventListener('click', (event) => {
+      // Check if the click is outside the sidebar
+      if (!document.getElementById('sidebar').classList.contains('show')) {
+          this.onSelect(event);
+      }
+  });
   }
 
   /**
@@ -189,12 +217,14 @@ class App {
 
   /** Place a sunflower when the screen is tapped. */
   onSelect = (event) => {
-    if (this.buttonClicked) {
-      this.buttonClicked = false; // Reset the flag for future clicks
-      return;
-  }
+  //   if (this.buttonClicked) {
+  //     this.buttonClicked = false; // Reset the flag for future clicks
+  //     return;
+  // }
+    // if (event.target.id === "buttonid") return;
 
-    if (event.target.id === "buttonid") return;
+    const target = event.target;
+    if (target.id === "buttonid" || target.closest('.sidebar')) return;
 
     if (window.sunflower && this.reticle.visible == true) {
       const clone = window.sunflower.clone();
@@ -203,7 +233,7 @@ class App {
 
       clone.traverse((child) => {
         if (child.material && child.material.name === "rp_nathan_animated_003_mat.006") {
-          child.visible = false; // Hides the child with the specific material
+          child.visible = false;
         }
       });
 
@@ -212,7 +242,7 @@ class App {
 
       const interactionPlane = new THREE.Mesh(
         new THREE.PlaneGeometry(2, 2),
-        new THREE.MeshBasicMaterial({ visible: false }) // Invisible plane
+        new THREE.MeshBasicMaterial({ visible: false })
       );
       interactionPlane.position.copy(clone.position);
       this.scene.add(interactionPlane);
