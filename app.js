@@ -1,6 +1,7 @@
 (async function() {
   const isArSessionSupported = navigator.xr && navigator.xr.isSessionSupported && await navigator.xr.isSessionSupported("immersive-ar");
   document.getElementById("buttonid").style.display = "none";
+  document.querySelector(".hex.pos0").style.display = "none";
   if (isArSessionSupported) {
     document.getElementById("enter-ar").addEventListener("click", window.app.activateXR)
   } else {
@@ -36,6 +37,7 @@ class App {
     this.touchX;
     this.lastTouchX;
     this.buttonClicked = false;
+    this.hexClicked = false;
     this.button = document.getElementById("buttonid");
     this.hex0 = document.querySelector(".hex.pos0");
     this.otherHexes = document.querySelectorAll(".hex:not(.pos0)");
@@ -53,13 +55,7 @@ class App {
     this.button.addEventListener('click', this.onButtonClick);
     this.hex0.addEventListener('click', this.onHexClick);
 
-    // document.getElementById('menu-honeycomb').addEventListener('click', function () {
-    //   const honeycombs = document.querySelectorAll('.honeycomb:not(#menu-honeycomb)'); // Select all but the first
-    //   honeycombs.forEach(honeycomb => {
-    //     honeycomb.classList.toggle('hidden');
-    //     honeycomb.classList.toggle('visible');
-    //   });
-    // });      
+    this.hex0.style.display = "inline-block";
   }
 
   onTouchStart = (event) => {
@@ -138,6 +134,7 @@ class App {
   }
 
   onHexClick = () => {
+    this.hexClicked = true;
     this.otherHexes.forEach(hex =>{
       hex.classList.toggle('hidden');
     })
@@ -206,11 +203,15 @@ class App {
 
   /** Place a sunflower when the screen is tapped. */
   onSelect = (event) => {
-  //   if (this.buttonClicked) {
-  //     this.buttonClicked = false; // Reset the flag for future clicks
-  //     return;
-  // }
-    // if (event.target.id === "buttonid") return;
+    if (this.buttonClicked) {
+      this.buttonClicked = false;
+      return;
+    }
+
+    if (this.hexClicked) {
+      this.hexClicked = false;
+      return;
+    }
 
     if (window.sunflower && this.reticle.visible == true) {
       const clone = window.sunflower.clone();
