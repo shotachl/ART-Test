@@ -1,7 +1,6 @@
 (async function() {
   const isArSessionSupported = navigator.xr && navigator.xr.isSessionSupported && await navigator.xr.isSessionSupported("immersive-ar");
   document.getElementById("buttonid").style.display = "none";
-  document.getElementById("sidebarButton").style.display = "none";
   if (isArSessionSupported) {
     document.getElementById("enter-ar").addEventListener("click", window.app.activateXR)
   } else {
@@ -38,9 +37,9 @@ class App {
     this.lastTouchX;
     this.buttonClicked = false;
     this.button = document.getElementById("buttonid");
-    this.setupSidebar();
-    this.sidebar = document.getElementById("sidebar");
-    this.sidebarButton = document.getElementById("sidebarButton")
+    this.hex0 = document.querySelector(".hex.pos0");
+    this.otherHexes = document.querySelectorAll(".hex:not(.pos0)");
+
 
     // We'll update the camera matrices directly from API, so
     // disable matrix auto updates so three.js doesn't attempt
@@ -52,24 +51,15 @@ class App {
     document.addEventListener('touchmove', this.onTouchMove);
     document.addEventListener('touchend', this.onTouchEnd);
     this.button.addEventListener('click', this.onButtonClick);
+    this.hex0.addEventListener('click', this.onHexClick);
 
-    this.sidebarButton.style.display = "block";
-  }
-
-  setupSidebar() {
-    // Open sidebar function
-    this.openSidebar = () => {
-      this.sidebar.classList.add("show");
-    };
-
-    // Close sidebar function
-    this.closeSidebar = () => {
-      this.sidebar.classList.remove("show");
-    };
-
-    // Event listeners for the sidebar button and close button
-    document.getElementById("sidebarButton").addEventListener("click", this.openSidebar);
-    document.getElementById("closeSidebar").addEventListener("click", this.closeSidebar);
+    // document.getElementById('menu-honeycomb').addEventListener('click', function () {
+    //   const honeycombs = document.querySelectorAll('.honeycomb:not(#menu-honeycomb)'); // Select all but the first
+    //   honeycombs.forEach(honeycomb => {
+    //     honeycomb.classList.toggle('hidden');
+    //     honeycomb.classList.toggle('visible');
+    //   });
+    // });      
   }
 
   onTouchStart = (event) => {
@@ -147,6 +137,12 @@ class App {
     }
   }
 
+  onHexClick = () => {
+    this.otherHexes.forEach(hex =>{
+      hex.classList.toggle('hidden');
+    })
+  }
+
   /**
    * Run when the Start AR button is pressed.
    */
@@ -180,13 +176,6 @@ class App {
     this.xrSession.updateRenderState({
       baseLayer: new XRWebGLLayer(this.xrSession, this.gl)
     });
-
-    this.canvas.addEventListener('click', (event) => {
-      // Check if the click is outside the sidebar
-      if (!document.getElementById('sidebar').classList.contains('show')) {
-          this.onSelect(event);
-      }
-  });
   }
 
   /**
@@ -222,9 +211,6 @@ class App {
   //     return;
   // }
     // if (event.target.id === "buttonid") return;
-
-    const target = event.target;
-    if (target.id === "buttonid" || target.closest('.sidebar')) return;
 
     if (window.sunflower && this.reticle.visible == true) {
       const clone = window.sunflower.clone();
