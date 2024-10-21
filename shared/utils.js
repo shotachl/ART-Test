@@ -35,9 +35,11 @@ class Reticle extends THREE.Object3D {
 }
 
 window.gltfLoader.load("../toroid_scene.gltf", function(gltf) {
-  const flower = gltf.scene.children;
-  flower.castShadow = true;
-  window.sunflower = gltf.scene;
+  window.toroidModel = gltf.scene;
+});
+
+window.gltfLoader.load("../gatescene.gltf", function(gltf) {
+  window.gateModel = gltf.scene;
 });
 
 

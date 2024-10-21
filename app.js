@@ -16,6 +16,10 @@ let clicks = 0;
  * and handle rendering on every frame.
  */
 class App {
+  constructor() {
+    this.selectedModel = null;
+  }
+
   setupThreeJs() {
     // To help with working with 3D on the web, we'll use three.js.
     // Set up the WebGLRenderer, which handles rendering to our session's base layer.
@@ -41,6 +45,9 @@ class App {
     this.button = document.getElementById("buttonid");
     this.hex0 = document.querySelector(".hex.pos0");
     this.otherHexes = document.querySelectorAll(".hex:not(.pos0)");
+    this.hex0 = document.querySelector(".hex.pos0");
+    this.hex1 = document.querySelector(".hex.pos1");
+    this.hex2 = document.querySelector(".hex.pos2");
 
 
     // We'll update the camera matrices directly from API, so
@@ -54,6 +61,10 @@ class App {
     document.addEventListener('touchend', this.onTouchEnd);
     this.button.addEventListener('click', this.onButtonClick);
     this.hex0.addEventListener('click', this.onHexClick);
+    
+    this.hex0.addEventListener('click', this.onHexClick);
+    this.hex1.addEventListener('click', () => this.selectModel('toroid'));
+    this.hex2.addEventListener('click', () => this.selectModel('gate'));
 
     this.hex0.style.display = "inline-block";
   }
@@ -140,6 +151,17 @@ class App {
     })
   }
 
+  selectModel(modelName) {
+    this.hexClicked = true;
+    if (modelName === 'toroid') {
+      this.selectedModel = window.toroidModel;
+    } else if (modelName === 'gate') {
+      this.selectedModel = window.gateModel;
+    }
+
+    this.otherHexes.forEach(hex => hex.classList.toggle('hidden'));
+  }
+
   /**
    * Run when the Start AR button is pressed.
    */
@@ -213,10 +235,15 @@ class App {
       return;
     }
 
-    if (window.sunflower && this.reticle.visible == true) {
-      const clone = window.sunflower.clone();
+    if (this.selectedModel && this.reticle.visible == true) {
+      const clone = this.selectedModel.clone();
       clone.position.copy(this.reticle.position);
-      clone.scale.set(0.2,0.2,0.2);
+
+      if (this.selectedModel === window.toroidModel) {
+        clone.scale.set(0.2, 0.2, 0.2);
+      } else if (this.selectedModel === window.gateModel) {
+        clone.scale.set(0.01, 0.01, 0.01);
+      }
 
       clone.traverse((child) => {
         if (child.material && child.material.name === "rp_nathan_animated_003_mat.006") {
