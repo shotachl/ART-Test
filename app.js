@@ -222,6 +222,8 @@ class App {
     // To help with working with 3D on the web, we'll use three.js.
     this.setupThreeJs();
 
+    this.selectedModel = window.toroidModel;
+
     // Setup an XRReferenceSpace using the "local" coordinate system.
     this.localReferenceSpace = await this.xrSession.requestReferenceSpace('local');
 
@@ -253,7 +255,7 @@ class App {
       clone.position.copy(this.reticle.position);
 
       this.distance = this.camera.position.distanceTo(this.reticle.position);
-      this.scaleT = 0.2 * this.distance;
+      this.scaleT = 0.15 * this.distance;
       this.scaleG = 0.01 * this.distance;
 
       if (this.selectedModel === window.toroidModel) {
