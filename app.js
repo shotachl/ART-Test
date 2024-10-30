@@ -18,6 +18,16 @@ let clicks = 0;
 class App {
   constructor() {
     this.selectedModel = null;
+    this.logOutput = document.getElementById('logOutput');
+    const originalLog = console.log;
+    console.log = (...args) => {
+      originalLog.apply(console, args);
+      const message = args.join(' ');
+      const logElement = document.createElement('div');
+      logElement.textContent = message;
+      this.logOutput.appendChild(logElement);
+      this.logOutput.scrollTop = this.logOutput.scrollHeight; // Scroll to the bottom
+    };
   }
 
   setupThreeJs() {
@@ -43,11 +53,12 @@ class App {
     this.buttonClicked = false;
     this.hexClicked = false;
     this.button = document.getElementById("buttonid");
-    this.hex0 = document.querySelector(".hex.pos0");
     this.otherHexes = document.querySelectorAll(".hex:not(.pos0)");
     this.hex0 = document.querySelector(".hex.pos0");
     this.hex1 = document.querySelector(".hex.pos1");
     this.hex2 = document.querySelector(".hex.pos2");
+    this.logOutPut = document.getElementById("logOutput");
+    this.originalLog = console.log;
 
 
     // We'll update the camera matrices directly from API, so
@@ -59,9 +70,7 @@ class App {
     document.addEventListener('touchstart', this.onTouchStart);
     document.addEventListener('touchmove', this.onTouchMove);
     document.addEventListener('touchend', this.onTouchEnd);
-    this.button.addEventListener('click', this.onButtonClick);
-    this.hex0.addEventListener('click', this.onHexClick);
-    
+    this.button.addEventListener('click', this.onButtonClick);  
     this.hex0.addEventListener('click', this.onHexClick);
     this.hex1.addEventListener('click', () => this.selectModel('toroid'));
     this.hex2.addEventListener('click', () => this.selectModel('gate'));
@@ -147,7 +156,9 @@ class App {
   onHexClick = () => {
     this.hexClicked = true;
     this.otherHexes.forEach(hex =>{
+      if (!hex.classList.contains('pos8') && !hex.classList.contains('pos9') && !hex.classList.contains('pos10')) {
       hex.classList.toggle('hidden');
+      }
     })
   }
 
@@ -158,9 +169,11 @@ class App {
     } else if (modelName === 'gate') {
       this.selectedModel = window.gateModel;
     }
-
+  
+    // Toggle visibility of other hexes, but do not toggle hexes 8, 9, or 10 here.
     this.otherHexes.forEach(hex => hex.classList.toggle('hidden'));
   }
+
 
   /**
    * Run when the Start AR button is pressed.
@@ -224,7 +237,7 @@ class App {
   }
 
   /** Place a sunflower when the screen is tapped. */
-  onSelect = (event) => {
+  onSelect = () => {
     if (this.buttonClicked) {
       this.buttonClicked = false;
       return;
@@ -235,14 +248,18 @@ class App {
       return;
     }
 
-    if (this.selectedModel && this.reticle.visible == true) {
+    if (this.selectedModel && this.reticle.visible === true) {
       const clone = this.selectedModel.clone();
       clone.position.copy(this.reticle.position);
 
+      this.distance = this.camera.position.distanceTo(this.reticle.position);
+      this.scaleT = 0.2 * this.distance;
+      this.scaleG = 0.01 * this.distance;
+
       if (this.selectedModel === window.toroidModel) {
-        clone.scale.set(0.2, 0.2, 0.2);
+        clone.scale.set(this.scaleT, this.scaleT, this.scaleT);
       } else if (this.selectedModel === window.gateModel) {
-        clone.scale.set(0.01, 0.01, 0.01);
+        clone.scale.set(this.scaleG, this.scaleG, this.scaleG);
       }
 
       clone.traverse((child) => {
@@ -253,7 +270,7 @@ class App {
 
       this.scene.add(clone);
       this.lastClone = clone;
-
+        
       const interactionPlane = new THREE.Mesh(
         new THREE.PlaneGeometry(2, 2),
         new THREE.MeshBasicMaterial({ visible: false })
@@ -272,6 +289,7 @@ class App {
    * Called on the XRSession's requestAnimationFrame.
    * Called with the time and XRPresentationFrame.
    */
+  ///comment this is where u should ctrl+z to
   onXRFrame = (time, frame) => {
     // Queue up the next draw request.
     this.xrSession.requestAnimationFrame(this.onXRFrame);
@@ -300,7 +318,6 @@ class App {
       const hitTestResults = frame.getHitTestResults(this.hitTestSource);
 
       // If we have results, consider the environment stabilized.
-
       if (hitTestResults.length > 0) {
         const hitPose = hitTestResults[0].getPose(this.localReferenceSpace);
 
@@ -312,13 +329,23 @@ class App {
         // Update the reticle position
         if(clicks < 1){
           this.reticle.visible = true;
+          this.button.style.display = "none";
+          document.querySelector(".hex.pos8").style.display = "none";
+          document.querySelector(".hex.pos9").style.display = "none";
+          document.querySelector(".hex.pos10").style.display = "none";
         }else if(clicks >= 1){
           this.reticle.visible = false;
           this.button.style.display = "block";
+          document.querySelector(".hex.pos8").style.display = "inline-block";
+          document.querySelector(".hex.pos9").style.display = "inline-block";
+          document.querySelector(".hex.pos10").style.display = "inline-block";
+        }
+
+        if (clicks === 0) {
+          this.reticle.position.set(hitPose.transform.position.x, hitPose.transform.position.y, hitPose.transform.position.z);
+          this.reticle.updateMatrixWorld(true);
         }
         
-        this.reticle.position.set(hitPose.transform.position.x, hitPose.transform.position.y, hitPose.transform.position.z);
-        this.reticle.updateMatrixWorld(true);
       }
 
       // Render the scene with THREE.WebGLRenderer.

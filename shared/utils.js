@@ -1,59 +1,118 @@
-/*
- * Copyright 2017 Google Inc. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the 'License');
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// Set up GLTFLoader for model loading
 window.gltfLoader = new THREE.GLTFLoader();
 
-/**
- * The Reticle class creates an object that repeatedly calls
- * `xrSession.requestHitTest()` to render a ring along a found
- * horizontal surface.
- */
+// Initialize loading state flags for each model
+let toroidLoadingStarted = false;
+let gateLoadingStarted = false;
+let toroidLoaded = false;
+let gateLoaded = false;
+let toroidLoadStartTime = null;
+let gateLoadStartTime = null;
+const LOAD_TIMEOUT = 10000; // 10 seconds timeout for checking cancellation
+
+// FPS Counting Variables
+let frameCount = 0; // Initialize frame count
+let lastTime = Date.now(); // Store the last time
+let fps = 0; // Variable to store calculated FPS
+
+// Load the toroid model
+console.log("Attempting to load toroid model...");
+window.gltfLoader.load("toroid_scene.gltf",
+  function (gltf) {
+    window.toroidModel = gltf.scene;
+    toroidLoaded = true;
+    const loadDuration = Date.now() - toroidLoadStartTime;
+    console.log(`Model1 (toroid) loaded successfully in ${loadDuration} ms:`, window.toroidModel);
+  },
+  function () {
+    if (!toroidLoadingStarted) {
+      toroidLoadingStarted = true;
+      toroidLoadStartTime = Date.now(); // Record the start time
+      console.log("Model1 (toroid) loading started...");
+    }
+  },
+  function (error) {
+    console.error("Error loading Model1 (toroid):", error);
+  }
+);
+
+// Load the gate model
+console.log("Attempting to load gate model...");
+window.gltfLoader.load("a_roughly_1.5_million_triangle_sphere_from_cube.glb",
+  function (gltf) {
+    window.gateModel = gltf.scene;
+    gateLoaded = true;
+    const loadDuration = Date.now() - gateLoadStartTime;
+    console.log(`Model2 (gate) loaded successfully in ${loadDuration} ms:`, window.gateModel);
+  },
+  function () {
+    if (!gateLoadingStarted) {
+      gateLoadingStarted = true;
+      gateLoadStartTime = Date.now(); // Record the start time
+      console.log("Model2 (gate) loading started...");
+    }
+  },
+  function (error) {
+    console.error("Error loading Model2 (gate):", error);
+  }
+);
+
+// Optional: Check if models are loaded, loading has started but was cancelled, or delayed
+setTimeout(() => {
+  if (toroidLoadingStarted && !toroidLoaded) {
+    console.warn("Model1 (toroid) loading was started but appears to be cancelled or delayed.");
+  }
+  if (gateLoadingStarted && !gateLoaded) {
+    console.warn("Model2 (gate) loading was started but appears to be cancelled or delayed.");
+  }
+  if (!toroidLoaded) {
+    console.warn("Model1 (toroid) may not have loaded. Check connection or file path.");
+  }
+  if (!gateLoaded) {
+    console.warn("Model2 (gate) may not have loaded. Check connection or file path.");
+  }
+}, LOAD_TIMEOUT); // Check after the defined timeout
+
+// FPS Counting Functionality
+function animate() {
+  requestAnimationFrame(animate); // Call animate on the next frame
+
+  // Your rendering logic here
+  // Example: renderer.render(scene, camera);  // Uncomment this when you have the renderer and camera set up
+
+  frameCount++; // Increment frame count
+
+  // Calculate FPS every second
+  const currentTime = Date.now();
+  if (currentTime - lastTime >= 1000) { // Check if a second has passed
+    fps = frameCount; // Set fps to the number of frames counted
+    document.getElementById('fpsCounter').innerText = `FPS: ${fps}`; // Display the FPS
+    frameCount = 0; // Reset the frame count
+    lastTime = currentTime; // Reset the last time
+  }
+}
+
+// Start the animation loop
+animate();
+
+// Reticle class
 class Reticle extends THREE.Object3D {
   constructor() {
-
     super();
 
     this.loader = new THREE.GLTFLoader();
     this.loader.load("https://immersive-web.github.io/webxr-samples/media/gltf/reticle/reticle.gltf", (gltf) => {
       this.add(gltf.scene);
-    })
+    });
 
     this.visible = false;
   }
 }
 
-window.gltfLoader.load("../toroid_scene.gltf", function(gltf) {
-  window.toroidModel = gltf.scene;
-});
-
-window.gltfLoader.load("../gatescene.gltf", function(gltf) {
-  window.gateModel = gltf.scene;
-});
-
-
-
+// Utility functions for creating scenes
 window.DemoUtils = {
-  /**
-   * Creates a THREE.Scene containing lights that case shadows,
-   * and a mesh that will receive shadows.
-   *
-   * @return {THREE.Scene}
-   */
   createCubeScene() {
     const scene = new THREE.Scene();
-
     const materials = [
       new THREE.MeshBasicMaterial({ color: 0xff0000 }),
       new THREE.MeshBasicMaterial({ color: 0x0000ff }),
@@ -82,55 +141,30 @@ window.DemoUtils = {
 
   createLitScene() {
     const scene = new THREE.Scene();
-
-    // The materials will render as a black mesh
-    // without lights in our scenes. Let's add an ambient light
-    // so our material can be visible, as well as a directional light
-    // for the shadow.
     const light = new THREE.AmbientLight(0xffffff, 1);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
     directionalLight.position.set(10, 15, 10);
-
-    // We want this light to cast shadow.
     directionalLight.castShadow = true;
 
-    // Make a large plane to receive our shadows
     const planeGeometry = new THREE.PlaneGeometry(2000, 2000);
-    // Rotate our plane to be parallel to the floor
     planeGeometry.rotateX(-Math.PI / 2);
-
-    // Create a mesh with a shadow material, resulting in a mesh
-    // that only renders shadows once we flip the `receiveShadow` property.
     const shadowMesh = new THREE.Mesh(planeGeometry, new THREE.ShadowMaterial({
       color: 0x111111,
       opacity: 0.2,
     }));
-
-    // Give it a name so we can reference it later, and set `receiveShadow`
-    // to true so that it can render our model's shadow.
     shadowMesh.name = 'shadowMesh';
     shadowMesh.receiveShadow = true;
     shadowMesh.position.y = 10000;
 
-    // Add lights and shadow material to scene.
     scene.add(shadowMesh);
     scene.add(light);
     scene.add(directionalLight);
 
     return scene;
-  },
-
-  /**
-   * Creates a THREE.Scene containing cubes all over the scene.
-   *
-   * @return {THREE.Scene}
-   */
+  }
 };
 
-/**
- * Toggle on a class on the page to disable the "Enter AR"
- * button and display the unsupported browser message.
- */
+// Handle unsupported XR device
 function onNoXRDevice() {
   document.body.classList.add('unsupported');
 }
