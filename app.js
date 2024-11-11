@@ -156,7 +156,7 @@ class App {
   onHexClick = () => {
     this.hexClicked = true;
     this.otherHexes.forEach(hex =>{
-      if (!hex.classList.contains('pos8') && !hex.classList.contains('pos9') && !hex.classList.contains('pos10')) {
+      if (!hex.classList.contains('pos8')) {
       hex.classList.toggle('hidden');
       }
     })
@@ -333,14 +333,10 @@ class App {
           this.reticle.visible = true;
           this.button.style.display = "none";
           document.querySelector(".hex.pos8").style.display = "none";
-          document.querySelector(".hex.pos9").style.display = "none";
-          document.querySelector(".hex.pos10").style.display = "none";
         }else if(clicks >= 1){
           this.reticle.visible = false;
           this.button.style.display = "block";
           document.querySelector(".hex.pos8").style.display = "inline-block";
-          document.querySelector(".hex.pos9").style.display = "inline-block";
-          document.querySelector(".hex.pos10").style.display = "inline-block";
         }
 
         if (clicks === 0) {

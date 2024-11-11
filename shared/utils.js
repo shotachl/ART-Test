@@ -1,21 +1,17 @@
-// Set up GLTFLoader for model loading
 window.gltfLoader = new THREE.GLTFLoader();
 
-// Initialize loading state flags for each model
 let toroidLoadingStarted = false;
 let gateLoadingStarted = false;
 let toroidLoaded = false;
 let gateLoaded = false;
 let toroidLoadStartTime = null;
 let gateLoadStartTime = null;
-const LOAD_TIMEOUT = 10000; // 10 seconds timeout for checking cancellation
+const LOAD_TIMEOUT = 10000;
 
-// FPS Counting Variables
-let frameCount = 0; // Initialize frame count
-let lastTime = Date.now(); // Store the last time
-let fps = 0; // Variable to store calculated FPS
+let frameCount = 0;
+let lastTime = Date.now();
+let fps = 0;
 
-// Load the toroid model
 console.log("Attempting to load toroid model...");
 window.gltfLoader.load("toroid_scene.gltf",
   function (gltf) {
@@ -27,7 +23,7 @@ window.gltfLoader.load("toroid_scene.gltf",
   function () {
     if (!toroidLoadingStarted) {
       toroidLoadingStarted = true;
-      toroidLoadStartTime = Date.now(); // Record the start time
+      toroidLoadStartTime = Date.now();
       console.log("Model1 (toroid) loading started...");
     }
   },
@@ -36,9 +32,28 @@ window.gltfLoader.load("toroid_scene.gltf",
   }
 );
 
-// Load the gate model
-console.log("Attempting to load gate model...");
-window.gltfLoader.load("a_roughly_1.5_million_triangle_sphere_from_cube.glb",
+// console.log("Attempting to load gate model...");
+// window.gltfLoader.load("https://tracer-geometry.web.cern.ch/magnet-toroid-barrel.glb",
+//   function (gltf) {
+//     window.gateModel = gltf.scene;
+//     gateLoaded = true;
+//     const loadDuration = Date.now() - gateLoadStartTime;
+//     console.log(`Model2 (gate) loaded successfully in ${loadDuration} ms:`, window.gateModel);
+//   },
+//   function () {
+//     if (!gateLoadingStarted) {
+//       gateLoadingStarted = true;
+//       gateLoadStartTime = Date.now();
+//       console.log("Model2 (gate) loading started...");
+//     }
+//   },
+//   function (error) {
+//     console.error("Error loading Model2 (gate):", error);
+//   }
+// );
+
+console.log("Attempting to load gate model directly from URL...");
+window.gltfLoader.load("https://cors-anywhere.herokuapp.com/https://tracer-geometry.web.cern.ch/magnet-toroid-barrel.glb",
   function (gltf) {
     window.gateModel = gltf.scene;
     gateLoaded = true;
@@ -48,7 +63,7 @@ window.gltfLoader.load("a_roughly_1.5_million_triangle_sphere_from_cube.glb",
   function () {
     if (!gateLoadingStarted) {
       gateLoadingStarted = true;
-      gateLoadStartTime = Date.now(); // Record the start time
+      gateLoadStartTime = Date.now();
       console.log("Model2 (gate) loading started...");
     }
   },
@@ -57,7 +72,8 @@ window.gltfLoader.load("a_roughly_1.5_million_triangle_sphere_from_cube.glb",
   }
 );
 
-// Optional: Check if models are loaded, loading has started but was cancelled, or delayed
+
+
 setTimeout(() => {
   if (toroidLoadingStarted && !toroidLoaded) {
     console.warn("Model1 (toroid) loading was started but appears to be cancelled or delayed.");
@@ -71,24 +87,21 @@ setTimeout(() => {
   if (!gateLoaded) {
     console.warn("Model2 (gate) may not have loaded. Check connection or file path.");
   }
-}, LOAD_TIMEOUT); // Check after the defined timeout
+}, LOAD_TIMEOUT);
 
-// FPS Counting Functionality
 function animate() {
-  requestAnimationFrame(animate); // Call animate on the next frame
+  requestAnimationFrame(animate);
 
-  // Your rendering logic here
-  // Example: renderer.render(scene, camera);  // Uncomment this when you have the renderer and camera set up
+  // Example: renderer.render(scene, camera);
 
-  frameCount++; // Increment frame count
+  frameCount++;
 
-  // Calculate FPS every second
   const currentTime = Date.now();
-  if (currentTime - lastTime >= 1000) { // Check if a second has passed
-    fps = frameCount; // Set fps to the number of frames counted
-    document.getElementById('fpsCounter').innerText = `FPS: ${fps}`; // Display the FPS
-    frameCount = 0; // Reset the frame count
-    lastTime = currentTime; // Reset the last time
+  if (currentTime - lastTime >= 1000) { 
+    fps = frameCount; 
+    document.getElementById('fpsCounter').innerText = `FPS: ${fps}`;
+    frameCount = 0; 
+    lastTime = currentTime; 
   }
 }
 
@@ -109,7 +122,6 @@ class Reticle extends THREE.Object3D {
   }
 }
 
-// Utility functions for creating scenes
 window.DemoUtils = {
   createCubeScene() {
     const scene = new THREE.Scene();
@@ -164,7 +176,6 @@ window.DemoUtils = {
   }
 };
 
-// Handle unsupported XR device
 function onNoXRDevice() {
   document.body.classList.add('unsupported');
 }

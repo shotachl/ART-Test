@@ -108,7 +108,7 @@ body.ar.stabilized #stabilization {
 
 #buttonid {
   border: 0;
-  background-color: #0a6bff;
+  background-color: #582841;
   border-radius: 30%;
   box-shadow: rgba(1, 60, 136, .5) 0 -1px 3px 0 inset, rgba(0, 44, 97, .1) 0 3px 6px 0;
   color: #fff;
@@ -140,7 +140,7 @@ body.ar.stabilized #stabilization {
 .hex {
   display: inline-block;
   filter: url('#goo');
-  color: #0a6bff;
+  color: #582841;
   width: 90px;
   position: absolute;
   text-align: center;
@@ -216,13 +216,4 @@ body.ar.stabilized #stabilization {
   right: 5px;
 }
 
-.pos9 {
-  top: 45px;
-  right: 75px;
-}
-
-.pos10 {
-  top: 85px;
-  right: 5px;
-}
 
