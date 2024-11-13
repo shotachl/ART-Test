@@ -26,7 +26,7 @@ class App {
       const logElement = document.createElement('div');
       logElement.textContent = message;
       this.logOutput.appendChild(logElement);
-      this.logOutput.scrollTop = this.logOutput.scrollHeight; // Scroll to the bottom
+      this.logOutput.scrollTop = this.logOutput.scrollHeight;
     };
   }
 
@@ -57,6 +57,7 @@ class App {
     this.hex0 = document.querySelector(".hex.pos0");
     this.hex1 = document.querySelector(".hex.pos1");
     this.hex2 = document.querySelector(".hex.pos2");
+    this.hex3 = document.querySelector(".hex.pos3");
     this.logOutPut = document.getElementById("logOutput");
     this.originalLog = console.log;
 
@@ -74,6 +75,7 @@ class App {
     this.hex0.addEventListener('click', this.onHexClick);
     this.hex1.addEventListener('click', () => this.selectModel('toroid'));
     this.hex2.addEventListener('click', () => this.selectModel('gate'));
+    this.hex3.addEventListener('click', () => this.selectModel('cal'));
 
     this.hex0.style.display = "inline-block";
   }
@@ -100,9 +102,6 @@ class App {
     this.lastClone.rotation.y += deltaX * 0.01;
     this.lastClone.rotation.x += deltaY * 0.01;
 
-    // Update debug info if needed
-    // document.getElementById("test2").innerHTML = `DeltaX: ${deltaX}, DeltaY: ${deltaY}`;
-
     const mouseEvent = new MouseEvent('mousemove', {
       clientX: currentTouchX,
       clientY: currentTouchY
@@ -122,9 +121,6 @@ class App {
         this.lastClone.scale.y * scaleFactor, 
         this.lastClone.scale.z * scaleFactor
       );
-
-      // const head = this.scene.children[1];
-      // head.scale.set(object.scale.x * scaleFactor, object.scale.y * scaleFactor, object.scale.z * scaleFactor);
 
       this.touchStartDistance = touchDistance;
     }
@@ -168,6 +164,8 @@ class App {
       this.selectedModel = window.toroidModel;
     } else if (modelName === 'gate') {
       this.selectedModel = window.gateModel;
+    } else if (modelName === 'cal'){
+      this.selectedModel = window.calModel;
     }
   
     // Toggle visibility of other hexes, but do not toggle hexes 8, 9, or 10 here.
@@ -257,11 +255,14 @@ class App {
       this.distance = this.camera.position.distanceTo(this.reticle.position);
       this.scaleT = 0.15 * this.distance;
       this.scaleG = 0.01 * this.distance;
+      this.scaleC = 0.02 * this.distance;
 
       if (this.selectedModel === window.toroidModel) {
         clone.scale.set(this.scaleT, this.scaleT, this.scaleT);
       } else if (this.selectedModel === window.gateModel) {
         clone.scale.set(this.scaleG, this.scaleG, this.scaleG);
+      } else if (this.selectedModel === window.calModel) {
+        clone.scale.set(this.scaleC, this.scaleC, this.scaleC);
       }
 
       clone.traverse((child) => {

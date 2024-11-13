@@ -2,16 +2,29 @@ window.gltfLoader = new THREE.GLTFLoader();
 
 let toroidLoadingStarted = false;
 let gateLoadingStarted = false;
+let calLoadingStarted = false;
 let toroidLoaded = false;
 let gateLoaded = false;
+let calLoaded = false;
 let toroidLoadStartTime = null;
 let gateLoadStartTime = null;
+let calLoadStartTime = null;
 const LOAD_TIMEOUT = 10000;
 
 let frameCount = 0;
 let lastTime = Date.now();
 let fps = 0;
 
+let MSgateGroup = new THREE.Group();
+let CgateGroup = new THREE.Group();
+
+const MSpartFiles = ["magnet-toroid-endcap.glb", "muon-barrel-inner.glb", "support-btwarm.glb", "support-feet.glb"];
+const CpartFiles = ["calorimeter-lar-barrel.glb", "calorimeter-lar-endcap.glb", "calorimeter-tile-barrel.glb", "calorimeter-tile-endcap.glb"];
+
+let MSloadedParts = 0;
+let CloadedParts = 0;
+
+/// TOROID MODEL (Object 1)
 console.log("Attempting to load toroid model...");
 window.gltfLoader.load("toroid_scene.gltf",
   function (gltf) {
@@ -32,62 +45,51 @@ window.gltfLoader.load("toroid_scene.gltf",
   }
 );
 
-// console.log("Attempting to load gate model...");
-// window.gltfLoader.load("https://tracer-geometry.web.cern.ch/magnet-toroid-barrel.glb",
-//   function (gltf) {
-//     window.gateModel = gltf.scene;
-//     gateLoaded = true;
-//     const loadDuration = Date.now() - gateLoadStartTime;
-//     console.log(`Model2 (gate) loaded successfully in ${loadDuration} ms:`, window.gateModel);
-//   },
-//   function () {
-//     if (!gateLoadingStarted) {
-//       gateLoadingStarted = true;
-//       gateLoadStartTime = Date.now();
-//       console.log("Model2 (gate) loading started...");
-//     }
-//   },
-//   function (error) {
-//     console.error("Error loading Model2 (gate):", error);
-//   }
-// );
+///Magnet System MODEL (Object 2)
+MSpartFiles.forEach((MSfile, index) => {
+  window.gltfLoader.load(
+    MSfile,
+    function (gltf) {
+      const MSpart = gltf.scene;
+      MSgateGroup.add(MSpart);
+      MSloadedParts++;
 
-console.log("Attempting to load gate model directly from URL...");
-window.gltfLoader.load("https://cors-anywhere.herokuapp.com/https://tracer-geometry.web.cern.ch/magnet-toroid-barrel.glb",
-  function (gltf) {
-    window.gateModel = gltf.scene;
-    gateLoaded = true;
-    const loadDuration = Date.now() - gateLoadStartTime;
-    console.log(`Model2 (gate) loaded successfully in ${loadDuration} ms:`, window.gateModel);
-  },
-  function () {
-    if (!gateLoadingStarted) {
-      gateLoadingStarted = true;
-      gateLoadStartTime = Date.now();
-      console.log("Model2 (gate) loading started...");
+      console.log(`Part ${index + 1} of gate model loaded successfully.`);
+      if (MSloadedParts === MSpartFiles.length) {
+        window.gateModel = MSgateGroup;
+        gateLoaded = true;
+        console.log("All parts of gate model loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of gate model:`, error);
     }
-  },
-  function (error) {
-    console.error("Error loading Model2 (gate):", error);
-  }
-);
+  );
+});
 
+///Calorimeter MODEL (Object 3)
+CpartFiles.forEach((Cfile, index) => {
+  window.gltfLoader.load(
+    Cfile,
+    function (gltf) {
+      const Cpart = gltf.scene;
+      CgateGroup.add(Cpart);
+      CloadedParts++;
 
-
-setTimeout(() => {
-  if (toroidLoadingStarted && !toroidLoaded) {
-    console.warn("Model1 (toroid) loading was started but appears to be cancelled or delayed.");
-  }
-  if (gateLoadingStarted && !gateLoaded) {
-    console.warn("Model2 (gate) loading was started but appears to be cancelled or delayed.");
-  }
-  if (!toroidLoaded) {
-    console.warn("Model1 (toroid) may not have loaded. Check connection or file path.");
-  }
-  if (!gateLoaded) {
-    console.warn("Model2 (gate) may not have loaded. Check connection or file path.");
-  }
-}, LOAD_TIMEOUT);
+      console.log(`Part ${index + 1} of cal model loaded successfully.`);
+      if (CloadedParts === CpartFiles.length) {
+        window.calModel = CgateGroup;
+        calLoaded = true;
+        console.log("All parts of cal model loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of cal model:`, error);
+    }
+  );
+});
 
 function animate() {
   requestAnimationFrame(animate);
