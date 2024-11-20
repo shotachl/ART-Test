@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building an augmented reality application with the WebXR Device API</title>
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+    <!-- three.js -->
+    <script src="https://unpkg.com/three@0.126.0/build/three.js"></script>
+    <script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./shared/app.css" />
+    <script src="./shared/utils.js"></script>
+  </head>
+
+
+  <body>
+    <div id="enter-ar-info" class="mdc-card demo-card">
+      <h2>Augmented Reality with the WebXR Device API</h2>
+
+      <!-- Starting an immersive WebXR session requires user interaction. Start the WebXR experience with a simple button. -->
+      <a id="enter-ar" class="mdc-button mdc-button--raised mdc-button--accent">
+        Start augmented reality
+      </a>
+    </div>
+
+    <div id="unsupported-info" class="mdc-card demo-card">
+      <h2>Unsupported Browser</h2>
+      <p>
+        Your browser does not support AR features with WebXR. Learn more about these features from the
+        <a href="https://codelabs.developers.google.com/codelabs/ar-with-webxr">Building an augmented reality application with the WebXR Device API</a> Code Lab.
+      </p>
+    </div>
+
+    <div id="resetButton" class="resetButton-class">
+      <button id="buttonid">X</button>
+    </div>
+
+    <div id="clicksid"></div>
+
+    <div id="stabilization"></div>
+
+    <div class="container">
+      <div class="hex pos0"><span>&#9776;</span></div>
+      <div class="hex pos1 hidden"><span>Magnet System</span></div>
+      <div class="hex pos2 hidden"><span>Calorimeter</span></div>
+      <div class="hex pos3 hidden"><span>Object 3</span></div>
+      <div class="hex pos4 hidden"><span>Object 4</span></div>
+      <div class="hex pos5 hidden"><span>Object 5</span></div>
+      <div class="hex pos6 hidden"><span>Object 6</span></div>
+      <div class="hex pos7 hidden"><span>Object 7</span></div>
+      <div class="hex pos8 hidden"><span id="cutStatus">Cut 1</span></div>
+      <div class="hex pos9 hidden"><span id="cutStatus1">Cut 2</span></div>
+      <div class="hex pos10 hidden"><span id="cutStatus2">Uncut</span></div>
+    </div>
+
+    <div id="logOutput"></div>
+
+    <div id="fpsCounter" style="position: absolute; top: 10px; left: 10px; color: white; font-size: 20px;"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
