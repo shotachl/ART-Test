@@ -51,7 +51,7 @@ let CloadedPartsCut2 = 0;
 ///Magnet System Model Uncut
 MSpartFiles.forEach((MSfile, index) => {
   window.gltfLoader.load(
-    MSfile,
+    "https://tracer-geometry.web.cern.ch/" + MSfile,
     function (gltf) {
       const MSpart = gltf.scene;
       MSgateGroup.add(MSpart);
@@ -74,7 +74,7 @@ MSpartFiles.forEach((MSfile, index) => {
 ///Magnet System Model Cut 1
 MSpartCut1Files.forEach((MSfileCut1, index) => {
   window.gltfLoader.load(
-    MSfileCut1,
+    "https://tracer-geometry.web.cern.ch/" + MSfileCut1,
     function (gltf) {
       const MSpartCut1 = gltf.scene;
       MSgateCut1Group.add(MSpartCut1);
@@ -97,7 +97,7 @@ MSpartCut1Files.forEach((MSfileCut1, index) => {
 ///Magnet System Model Cut 2
 MSpartCut2Files.forEach((MSfileCut2, index) => {
   window.gltfLoader.load(
-    MSfileCut2,
+    "https://tracer-geometry.web.cern.ch/" + MSfileCut2,
     function (gltf) {
       const MSpartCut2 = gltf.scene;
       MSgateCut2Group.add(MSpartCut2);
@@ -120,7 +120,7 @@ MSpartCut2Files.forEach((MSfileCut2, index) => {
 ///Calorimeter Model Uncut
 CpartFiles.forEach((Cfile, index) => {
   window.gltfLoader.load(
-    Cfile,
+    "https://tracer-geometry.web.cern.ch/" + Cfile,
     function (gltf) {
       const Cpart = gltf.scene;
       CgateGroup.add(Cpart);
@@ -143,7 +143,7 @@ CpartFiles.forEach((Cfile, index) => {
 ///Calorimeter Model Cut 1
 CpartCut1Files.forEach((Cfile1, index) => {
   window.gltfLoader.load(
-    Cfile1,
+    "https://tracer-geometry.web.cern.ch/" + Cfile1,
     function (gltf) {
       const C1part = gltf.scene;
       CgateCut1Group.add(C1part);
@@ -166,7 +166,7 @@ CpartCut1Files.forEach((Cfile1, index) => {
 ///Calorimeter Model Cut 2
 CpartCut2Files.forEach((Cfile2, index) => {
   window.gltfLoader.load(
-    Cfile2,
+    "https://tracer-geometry.web.cern.ch/" + Cfile2,
     function (gltf) {
       const C2part = gltf.scene;
       CgateCut2Group.add(C2part);
