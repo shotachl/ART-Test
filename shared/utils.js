@@ -6,6 +6,10 @@ let calLoadingStarted = false;
 let toroidLoaded = false;
 let gateLoaded = false;
 let calLoaded = false;
+let gate1Loaded = false;
+let cal1Loaded = false;
+let gate2Loaded = false;
+let cal2Loaded = false;
 let toroidLoadStartTime = null;
 let gateLoadStartTime = null;
 let calLoadStartTime = null;
@@ -18,34 +22,33 @@ let fps = 0;
 let MSgateGroup = new THREE.Group();
 let CgateGroup = new THREE.Group();
 
+let MSgateCut1Group = new THREE.Group();
+let CgateCut1Group = new THREE.Group();
+
+let MSgateCut2Group = new THREE.Group();
+let CgateCut2Group = new THREE.Group();
+
+
 const MSpartFiles = ["magnet-toroid-endcap.glb", "muon-barrel-inner.glb", "support-btwarm.glb", "support-feet.glb"];
 const CpartFiles = ["calorimeter-lar-barrel.glb", "calorimeter-lar-endcap.glb", "calorimeter-tile-barrel.glb", "calorimeter-tile-endcap.glb"];
+
+const MSpartCut1Files = ["magnet-toroid-barrel-cut-2.glb", "magnet-toroid-endcap-cut-2.glb", "support-btwarm-cut-2.glb", "support-feet-cut-2.glb"];
+const CpartCut1Files = ["calorimeter-lar-barrel-cut-2.glb", "calorimeter-lar-endcap-cut-2.glb", "calorimeter-tile-barrel-cut-2.glb", "calorimeter-tile-endcap-cut-2.glb"];
+
+const MSpartCut2Files = ["magnet-toroid-barrel-cut-3.glb", "magnet-toroid-endcap-cut-3.glb", "support-btwarm-cut-3.glb", "support-feet-cut-3.glb"];
+const CpartCut2Files = ["calorimeter-lar-barrel-cut-3.glb", "calorimeter-lar-endcap-cut-3.glb", "calorimeter-tile-barrel-cut-3.glb", "calorimeter-tile-endcap-cut-3.glb"];
+
 
 let MSloadedParts = 0;
 let CloadedParts = 0;
 
-/// TOROID MODEL (Object 1)
-console.log("Attempting to load toroid model...");
-window.gltfLoader.load("toroid_scene.gltf",
-  function (gltf) {
-    window.toroidModel = gltf.scene;
-    toroidLoaded = true;
-    const loadDuration = Date.now() - toroidLoadStartTime;
-    console.log(`Model1 (toroid) loaded successfully in ${loadDuration} ms:`, window.toroidModel);
-  },
-  function () {
-    if (!toroidLoadingStarted) {
-      toroidLoadingStarted = true;
-      toroidLoadStartTime = Date.now();
-      console.log("Model1 (toroid) loading started...");
-    }
-  },
-  function (error) {
-    console.error("Error loading Model1 (toroid):", error);
-  }
-);
+let MSloadedPartsCut1 = 0;
+let CloadedPartsCut1 = 0;
 
-///Magnet System MODEL (Object 2)
+let MSloadedPartsCut2 = 0;
+let CloadedPartsCut2 = 0;
+
+///Magnet System Model Uncut
 MSpartFiles.forEach((MSfile, index) => {
   window.gltfLoader.load(
     MSfile,
@@ -54,7 +57,7 @@ MSpartFiles.forEach((MSfile, index) => {
       MSgateGroup.add(MSpart);
       MSloadedParts++;
 
-      console.log(`Part ${index + 1} of gate model loaded successfully.`);
+      // console.log(`Part ${index + 1} of gate model loaded successfully.`);
       if (MSloadedParts === MSpartFiles.length) {
         window.gateModel = MSgateGroup;
         gateLoaded = true;
@@ -68,7 +71,53 @@ MSpartFiles.forEach((MSfile, index) => {
   );
 });
 
-///Calorimeter MODEL (Object 3)
+///Magnet System Model Cut 1
+MSpartCut1Files.forEach((MSfileCut1, index) => {
+  window.gltfLoader.load(
+    MSfileCut1,
+    function (gltf) {
+      const MSpartCut1 = gltf.scene;
+      MSgateCut1Group.add(MSpartCut1);
+      MSloadedPartsCut1++;
+
+      // console.log(`Part ${index + 1} of gate 1 model loaded successfully.`);
+      if (MSloadedPartsCut1 === MSpartCut1Files.length) {
+        window.gateModelCut1 = MSgateCut1Group;
+        gate1Loaded = true;
+        console.log("All parts of gate 1 model loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of gate 1 model:`, error);
+    }
+  );
+});
+
+///Magnet System Model Cut 2
+MSpartCut2Files.forEach((MSfileCut2, index) => {
+  window.gltfLoader.load(
+    MSfileCut2,
+    function (gltf) {
+      const MSpartCut2 = gltf.scene;
+      MSgateCut2Group.add(MSpartCut2);
+      MSloadedPartsCut2++;
+
+      // console.log(`Part ${index + 1} of gate 2 model loaded successfully.`);
+      if (MSloadedPartsCut2 === MSpartCut2Files.length) {
+        window.gateModelCut2 = MSgateCut2Group;
+        gate2Loaded = true;
+        console.log("All parts of gate 2 model loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of gate 2 model:`, error);
+    }
+  );
+});
+
+///Calorimeter Model Uncut
 CpartFiles.forEach((Cfile, index) => {
   window.gltfLoader.load(
     Cfile,
@@ -77,7 +126,7 @@ CpartFiles.forEach((Cfile, index) => {
       CgateGroup.add(Cpart);
       CloadedParts++;
 
-      console.log(`Part ${index + 1} of cal model loaded successfully.`);
+      // console.log(`Part ${index + 1} of cal model loaded successfully.`);
       if (CloadedParts === CpartFiles.length) {
         window.calModel = CgateGroup;
         calLoaded = true;
@@ -87,6 +136,52 @@ CpartFiles.forEach((Cfile, index) => {
     undefined,
     function (error) {
       console.error(`Error loading part ${index + 1} of cal model:`, error);
+    }
+  );
+});
+
+///Calorimeter Model Cut 1
+CpartCut1Files.forEach((Cfile1, index) => {
+  window.gltfLoader.load(
+    Cfile1,
+    function (gltf) {
+      const C1part = gltf.scene;
+      CgateCut1Group.add(C1part);
+      CloadedPartsCut1++;
+
+      // console.log(`Part ${index + 1} of cal 1 model loaded successfully.`);
+      if (CloadedPartsCut1 === CpartCut1Files.length) {
+        window.calModelCut1 = CgateCut1Group;
+        cal1Loaded = true;
+        console.log("All parts of cal model 1 loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of cal 1 model:`, error);
+    }
+  );
+});
+
+///Calorimeter Model Cut 2
+CpartCut2Files.forEach((Cfile2, index) => {
+  window.gltfLoader.load(
+    Cfile2,
+    function (gltf) {
+      const C2part = gltf.scene;
+      CgateCut2Group.add(C2part);
+      CloadedPartsCut2++;
+
+      // console.log(`Part ${index + 1} of cal 2 model loaded successfully.`);
+      if (CloadedPartsCut2 === CpartCut2Files.length) {
+        window.calModelCut2 = CgateCut2Group;
+        cal2Loaded = true;
+        console.log("All parts of cal model 2 loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of cal 2 model:`, error);
     }
   );
 });

@@ -73,9 +73,9 @@ class App {
     document.addEventListener('touchend', this.onTouchEnd);
     this.button.addEventListener('click', this.onButtonClick);  
     this.hex0.addEventListener('click', this.onHexClick);
-    this.hex1.addEventListener('click', () => this.selectModel('toroid'));
-    this.hex2.addEventListener('click', () => this.selectModel('gate'));
-    this.hex3.addEventListener('click', () => this.selectModel('cal'));
+    this.hex1.addEventListener('click', () => this.selectModel('gate'));
+    this.hex2.addEventListener('click', () => this.selectModel('cal'));
+    // this.hex3.addEventListener('click', () => this.selectModel('cal'));
 
     this.hex0.style.display = "inline-block";
   }
@@ -160,11 +160,9 @@ class App {
 
   selectModel(modelName) {
     this.hexClicked = true;
-    if (modelName === 'toroid') {
-      this.selectedModel = window.toroidModel;
-    } else if (modelName === 'gate') {
+    if (modelName === 'gate') {
       this.selectedModel = window.gateModel;
-    } else if (modelName === 'cal'){
+    } else if (modelName === 'cal') {
       this.selectedModel = window.calModel;
     }
   
@@ -220,7 +218,7 @@ class App {
     // To help with working with 3D on the web, we'll use three.js.
     this.setupThreeJs();
 
-    this.selectedModel = window.toroidModel;
+    this.selectedModel = window.gateModel;
 
     // Setup an XRReferenceSpace using the "local" coordinate system.
     this.localReferenceSpace = await this.xrSession.requestReferenceSpace('local');
@@ -253,13 +251,10 @@ class App {
       clone.position.copy(this.reticle.position);
 
       this.distance = this.camera.position.distanceTo(this.reticle.position);
-      this.scaleT = 0.15 * this.distance;
       this.scaleG = 0.01 * this.distance;
       this.scaleC = 0.02 * this.distance;
 
-      if (this.selectedModel === window.toroidModel) {
-        clone.scale.set(this.scaleT, this.scaleT, this.scaleT);
-      } else if (this.selectedModel === window.gateModel) {
+      if (this.selectedModel === window.gateModel) {
         clone.scale.set(this.scaleG, this.scaleG, this.scaleG);
       } else if (this.selectedModel === window.calModel) {
         clone.scale.set(this.scaleC, this.scaleC, this.scaleC);
