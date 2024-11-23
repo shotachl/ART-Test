@@ -53,7 +53,7 @@ class App {
     this.buttonClicked = false;
     this.hexClicked = false;
     this.button = document.getElementById("buttonid");
-    this.otherHexes = document.querySelectorAll(".hex:not(.pos0)");
+    this.otherHexes = document.querySelectorAll(".hex.pos1, .hex.pos2, .hex.pos3, .hex.pos4");
     this.hex0 = document.querySelector(".hex.pos0");
     this.hex1 = document.querySelector(".hex.pos1");
     this.hex2 = document.querySelector(".hex.pos2");
@@ -305,8 +305,8 @@ class App {
       clone.position.copy(this.reticle.position);
 
       this.distance = this.camera.position.distanceTo(this.reticle.position);
-      this.scaleG = 0.025 * this.distance;
-      this.scaleC = 0.04 * this.distance;
+      this.scaleG = 0.02 * this.distance;
+      this.scaleC = 0.03 * this.distance;
 
       if (this.selectedModel === window.gateModel) {
         clone.scale.set(this.scaleG, this.scaleG, this.scaleG);

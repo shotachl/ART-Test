@@ -15,10 +15,6 @@ let gateLoadStartTime = null;
 let calLoadStartTime = null;
 const LOAD_TIMEOUT = 10000;
 
-let frameCount = 0;
-let lastTime = Date.now();
-let fps = 0;
-
 let MSgateGroup = new THREE.Group();
 let CgateGroup = new THREE.Group();
 
@@ -185,25 +181,6 @@ CpartCut2Files.forEach((Cfile2, index) => {
     }
   );
 });
-
-function animate() {
-  requestAnimationFrame(animate);
-
-  // Example: renderer.render(scene, camera);
-
-  frameCount++;
-
-  const currentTime = Date.now();
-  if (currentTime - lastTime >= 1000) { 
-    fps = frameCount; 
-    document.getElementById('fpsCounter').innerText = `FPS: ${fps}`;
-    frameCount = 0; 
-    lastTime = currentTime; 
-  }
-}
-
-// Start the animation loop
-animate();
 
 // Reticle class
 class Reticle extends THREE.Object3D {
