@@ -179,29 +179,29 @@ class App {
 
   cycleCutState = (state) => {
     if (this.lastClone) {
-      // Save the transformation properties
       const originalScale = this.lastClone.scale.clone();
       const originalRotation = this.lastClone.rotation.clone();
       const originalPosition = this.lastClone.position.clone();
   
-      // Remove the current object from the scene
       this.scene.remove(this.lastClone);
       this.lastClone = null;
   
-      // Determine the appropriate group
       let selectedGroup = null;
   
       if (state === 'cut1') {
         selectedGroup = this.CalisSelected ? CgateCut1Group : MSgateCut1Group;
         this.cut1.classList.add('hidden');
+        this.uncut.classList.add('hidden');
         this.cut2.classList.remove('hidden');
       } else if (state === 'cut2') {
         selectedGroup = this.CalisSelected ? CgateCut2Group : MSgateCut2Group;
         this.cut2.classList.add('hidden');
+        this.cut1.classList.add('hidden');
         this.uncut.classList.remove('hidden');
       } else if (state === 'uncut') {
         selectedGroup = this.CalisSelected ? CgateGroup : MSgateGroup;
         this.uncut.classList.add('hidden');
+        this.cut2.classList.add('hidden');
         this.cut1.classList.remove('hidden');
       }
   
@@ -305,8 +305,8 @@ class App {
       clone.position.copy(this.reticle.position);
 
       this.distance = this.camera.position.distanceTo(this.reticle.position);
-      this.scaleG = 0.02 * this.distance;
-      this.scaleC = 0.03 * this.distance;
+      this.scaleG = 0.01 * this.distance;
+      this.scaleC = 0.02 * this.distance;
 
       if (this.selectedModel === window.gateModel) {
         clone.scale.set(this.scaleG, this.scaleG, this.scaleG);
@@ -380,11 +380,11 @@ class App {
         if(clicks < 1){
           this.reticle.visible = true;
           this.button.style.display = "none";
-          document.querySelector(".hex.pos8").style.display = "none";
+          this.cut1.classList.add('hidden');
         }else if(clicks >= 1){
           this.reticle.visible = false;
           this.button.style.display = "block";
-          document.querySelector(".hex.pos8").style.display = "inline-block";
+          this.cut1.classList.remove('hidden');
         }
 
         if (clicks === 0) {

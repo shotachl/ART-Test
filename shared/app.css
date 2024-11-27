@@ -107,10 +107,9 @@ body.ar.stabilized #stabilization {
 #wrong-hosting-root { display: none; }
 
 #buttonid {
-  border: 0;
-  background-color: #582841;
+  border: 2.5px solid #0448a3; /* Increased border thickness */
+  background-color: transparent;
   border-radius: 30%;
-  box-shadow: rgba(1, 60, 136, .5) 0 -1px 3px 0 inset, rgba(0, 44, 97, .1) 0 3px 6px 0;
   color: #fff;
   cursor: pointer;
   font-family: "Space Grotesk", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -139,26 +138,16 @@ body.ar.stabilized #stabilization {
 
 .hex {
   display: inline-block;
-  filter: url('#goo');
-  color: #582841;
-  width: 90px;
   position: absolute;
   text-align: center;
   font-size: 24px;
   line-height: 1;
-  -webkit-mask: radial-gradient(circle, black 95%, transparent 98%);
-  -webkit-mask-composite: destination-out;
-  mask-composite: exclude; /* For other browsers */
-  mask: radial-gradient(circle, black 95%, transparent 98%);
-}
-
-.hex::before {
-  content: "";
-  display: block;
-  background: currentColor;
-  padding-top: 86.6%;
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  position: relative;
+  width: 90px;
+  height: 90px;
+  background-image: url('./hex.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .hex span {
@@ -168,7 +157,7 @@ body.ar.stabilized #stabilization {
   transform: translate(-50%, -50%);
   color: white;
   font-family: monospace;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .hidden {

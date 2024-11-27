@@ -57,7 +57,7 @@ MSpartFiles.forEach((MSfile, index) => {
       if (MSloadedParts === MSpartFiles.length) {
         window.gateModel = MSgateGroup;
         gateLoaded = true;
-        console.log("All parts of gate model loaded successfully.");
+        console.log("magnet loaded successfully.");
       }
     },
     undefined,
@@ -80,7 +80,7 @@ MSpartCut1Files.forEach((MSfileCut1, index) => {
       if (MSloadedPartsCut1 === MSpartCut1Files.length) {
         window.gateModelCut1 = MSgateCut1Group;
         gate1Loaded = true;
-        console.log("All parts of gate 1 model loaded successfully.");
+        console.log("magnet 1 model loaded successfully.");
       }
     },
     undefined,
@@ -103,7 +103,7 @@ MSpartCut2Files.forEach((MSfileCut2, index) => {
       if (MSloadedPartsCut2 === MSpartCut2Files.length) {
         window.gateModelCut2 = MSgateCut2Group;
         gate2Loaded = true;
-        console.log("All parts of gate 2 model loaded successfully.");
+        console.log("magnet 2 model loaded successfully.");
       }
     },
     undefined,
@@ -126,7 +126,7 @@ CpartFiles.forEach((Cfile, index) => {
       if (CloadedParts === CpartFiles.length) {
         window.calModel = CgateGroup;
         calLoaded = true;
-        console.log("All parts of cal model loaded successfully.");
+        console.log("cal model loaded successfully.");
       }
     },
     undefined,
@@ -149,7 +149,7 @@ CpartCut1Files.forEach((Cfile1, index) => {
       if (CloadedPartsCut1 === CpartCut1Files.length) {
         window.calModelCut1 = CgateCut1Group;
         cal1Loaded = true;
-        console.log("All parts of cal model 1 loaded successfully.");
+        console.log("cal model 1 loaded successfully.");
       }
     },
     undefined,
@@ -172,7 +172,7 @@ CpartCut2Files.forEach((Cfile2, index) => {
       if (CloadedPartsCut2 === CpartCut2Files.length) {
         window.calModelCut2 = CgateCut2Group;
         cal2Loaded = true;
-        console.log("All parts of cal model 2 loaded successfully.");
+        console.log("cal model 2 loaded successfully.");
       }
     },
     undefined,
