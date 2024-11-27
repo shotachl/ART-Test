@@ -146,6 +146,10 @@ body.ar.stabilized #stabilization {
   text-align: center;
   font-size: 24px;
   line-height: 1;
+  -webkit-mask: radial-gradient(circle, black 95%, transparent 98%);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude; /* For other browsers */
+  mask: radial-gradient(circle, black 95%, transparent 98%);
 }
 
 .hex::before {

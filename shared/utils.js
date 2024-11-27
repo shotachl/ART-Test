@@ -25,7 +25,7 @@ let MSgateCut2Group = new THREE.Group();
 let CgateCut2Group = new THREE.Group();
 
 
-const MSpartFiles = ["magnet-toroid-endcap.glb", "muon-barrel-inner.glb", "support-btwarm.glb", "support-feet.glb"];
+const MSpartFiles = ["magnet-toroid-endcap.glb", "magnet-toroid-barrel.glb", "support-btwarm.glb", "support-feet.glb"];
 const CpartFiles = ["calorimeter-lar-barrel.glb", "calorimeter-lar-endcap.glb", "calorimeter-tile-barrel.glb", "calorimeter-tile-endcap.glb"];
 
 const MSpartCut1Files = ["magnet-toroid-barrel-cut-2.glb", "magnet-toroid-endcap-cut-2.glb", "support-btwarm-cut-2.glb", "support-feet-cut-2.glb"];
