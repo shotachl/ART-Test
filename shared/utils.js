@@ -1,48 +1,56 @@
 window.gltfLoader = new THREE.GLTFLoader();
 
-let toroidLoadingStarted = false;
-let gateLoadingStarted = false;
-let calLoadingStarted = false;
-let toroidLoaded = false;
 let gateLoaded = false;
 let calLoaded = false;
+let ITKLoaded = false
+
 let gate1Loaded = false;
 let cal1Loaded = false;
+let ITK1Loaded = false
+
 let gate2Loaded = false;
 let cal2Loaded = false;
-let toroidLoadStartTime = null;
-let gateLoadStartTime = null;
-let calLoadStartTime = null;
+let ITK2Loaded = false;
+
 const LOAD_TIMEOUT = 10000;
 
 let MSgateGroup = new THREE.Group();
 let CgateGroup = new THREE.Group();
+let ITKgateGroup = new THREE.Group();
 
 let MSgateCut1Group = new THREE.Group();
 let CgateCut1Group = new THREE.Group();
+let ITKgateCut1Group = new THREE.Group();
 
 let MSgateCut2Group = new THREE.Group();
 let CgateCut2Group = new THREE.Group();
+let ITKgateCut2Group = new THREE.Group();
 
 
 const MSpartFiles = ["magnet-toroid-endcap.glb", "magnet-toroid-barrel.glb", "support-btwarm.glb", "support-feet.glb"];
 const CpartFiles = ["calorimeter-lar-barrel.glb", "calorimeter-lar-endcap.glb", "calorimeter-tile-barrel.glb", "calorimeter-tile-endcap.glb"];
+const ITKpartFiles = ["itk-pixel-inner-barrel-det.glb", "itk-pixel-inner-endcap-det-sidea.glb", "itk-pixel-inner-endcap-det-sidec.glb", "itk-pixel-outer-barrel-det.glb", "itk-pixel-outer-endcap-det-sidea.glb", "itk-pixel-outer-endcap-det-sidec.glb", "itk-strip-barrel-detector.glb", "itk-strip-endcup-detector-sidea.glb", "itk-strip-endcup-detector-sidec.glb"];
 
-const MSpartCut1Files = ["magnet-toroid-barrel-cut-2.glb", "magnet-toroid-endcap-cut-2.glb", "support-btwarm-cut-2.glb", "support-feet-cut-2.glb"];
-const CpartCut1Files = ["calorimeter-lar-barrel-cut-2.glb", "calorimeter-lar-endcap-cut-2.glb", "calorimeter-tile-barrel-cut-2.glb", "calorimeter-tile-endcap-cut-2.glb"];
+const MSpartCut1Files = ["magnet-toroid-barrel-cut2.glb", "magnet-toroid-endcap-cut2.glb", "support-btwarm-cut2.glb", "support-feet-cut2.glb"];
+const CpartCut1Files = ["calorimeter-lar-barrel-cut2.glb", "calorimeter-lar-endcap-cut2.glb", "calorimeter-tile-barrel-cut2.glb", "calorimeter-tile-endcap-cut2.glb"];
+const ITKpartCut1Files = ["itk-pixel-inner-barrel-det-cut2.glb", "itk-pixel-inner-endcap-det-sidea-cut2.glb", "itk-pixel-inner-endcap-det-sidec-cut2.glb", "itk-pixel-outer-barrel-det-cut2.glb", "itk-pixel-outer-endcap-det-sidea-cut2.glb", "itk-pixel-outer-endcap-det-sidec-cut2.glb", "itk-strip-barrel-detector-cut2.glb", "itk-strip-endcup-detector-sidea-cut2.glb", "itk-strip-endcup-detector-sidec-cut2.glb"];
 
-const MSpartCut2Files = ["magnet-toroid-barrel-cut-3.glb", "magnet-toroid-endcap-cut-3.glb", "support-btwarm-cut-3.glb", "support-feet-cut-3.glb"];
-const CpartCut2Files = ["calorimeter-lar-barrel-cut-3.glb", "calorimeter-lar-endcap-cut-3.glb", "calorimeter-tile-barrel-cut-3.glb", "calorimeter-tile-endcap-cut-3.glb"];
-
+const MSpartCut2Files = ["magnet-toroid-barrel-cut3.glb", "magnet-toroid-endcap-cut3.glb", "support-btwarm-cut3.glb", "support-feet-cut3.glb"];
+const CpartCut2Files = ["calorimeter-lar-barrel-cut3.glb", "calorimeter-lar-endcap-cut3.glb", "calorimeter-tile-barrel-cut3.glb", "calorimeter-tile-endcap-cut3.glb"];
+const ITKpartCut2Files = ["itk-pixel-inner-barrel-det-cut3.glb", "itk-pixel-inner-endcap-det-sidea-cut3.glb", "itk-pixel-inner-endcap-det-sidec-cut3.glb", "itk-pixel-outer-barrel-det-cut3.glb", "itk-pixel-outer-endcap-det-sidea-cut3.glb", "itk-pixel-outer-endcap-det-sidec-cut3.glb", "itk-strip-barrel-detector-cut3.glb", "itk-strip-endcup-detector-sidea-cut3.glb", "itk-strip-endcup-detector-sidec-cut3.glb"];
 
 let MSloadedParts = 0;
 let CloadedParts = 0;
+let ITKloadedParts = 0;
 
 let MSloadedPartsCut1 = 0;
 let CloadedPartsCut1 = 0;
+let ITKloadedPartsCut1 = 0;
 
 let MSloadedPartsCut2 = 0;
 let CloadedPartsCut2 = 0;
+let ITKloadedPartsCut2 = 0;
+
 
 ///Magnet System Model Uncut
 MSpartFiles.forEach((MSfile, index) => {
@@ -57,7 +65,7 @@ MSpartFiles.forEach((MSfile, index) => {
       if (MSloadedParts === MSpartFiles.length) {
         window.gateModel = MSgateGroup;
         gateLoaded = true;
-        console.log("magnet loaded successfully.");
+        // console.log("magnet loaded successfully.");
       }
     },
     undefined,
@@ -80,7 +88,7 @@ MSpartCut1Files.forEach((MSfileCut1, index) => {
       if (MSloadedPartsCut1 === MSpartCut1Files.length) {
         window.gateModelCut1 = MSgateCut1Group;
         gate1Loaded = true;
-        console.log("magnet 1 model loaded successfully.");
+        // console.log("magnet 1 model loaded successfully.");
       }
     },
     undefined,
@@ -103,7 +111,7 @@ MSpartCut2Files.forEach((MSfileCut2, index) => {
       if (MSloadedPartsCut2 === MSpartCut2Files.length) {
         window.gateModelCut2 = MSgateCut2Group;
         gate2Loaded = true;
-        console.log("magnet 2 model loaded successfully.");
+        // console.log("magnet 2 model loaded successfully.");
       }
     },
     undefined,
@@ -126,7 +134,7 @@ CpartFiles.forEach((Cfile, index) => {
       if (CloadedParts === CpartFiles.length) {
         window.calModel = CgateGroup;
         calLoaded = true;
-        console.log("cal model loaded successfully.");
+        // console.log("cal model loaded successfully.");
       }
     },
     undefined,
@@ -149,7 +157,7 @@ CpartCut1Files.forEach((Cfile1, index) => {
       if (CloadedPartsCut1 === CpartCut1Files.length) {
         window.calModelCut1 = CgateCut1Group;
         cal1Loaded = true;
-        console.log("cal model 1 loaded successfully.");
+        // console.log("cal model 1 loaded successfully.");
       }
     },
     undefined,
@@ -172,7 +180,7 @@ CpartCut2Files.forEach((Cfile2, index) => {
       if (CloadedPartsCut2 === CpartCut2Files.length) {
         window.calModelCut2 = CgateCut2Group;
         cal2Loaded = true;
-        console.log("cal model 2 loaded successfully.");
+        // console.log("cal model 2 loaded successfully.");
       }
     },
     undefined,
@@ -181,6 +189,77 @@ CpartCut2Files.forEach((Cfile2, index) => {
     }
   );
 });
+
+///ITK Model Uncut
+ITKpartFiles.forEach((ITKfile, index) => {
+  window.gltfLoader.load(
+    "https://tracer-geometry.web.cern.ch/" + ITKfile,
+    function (gltf) {
+      const ITKpart = gltf.scene;
+      ITKgateGroup.add(ITKpart);
+      ITKloadedParts++;
+
+      // console.log(`Part ${index + 1} of itk model loaded successfully.`);
+      if (ITKloadedParts === ITKpartFiles.length) {
+        window.ITKModel = ITKgateGroup;
+        ITKLoaded = true;
+        console.log("ITK model loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of ITK model:`, error);
+    }
+  );
+});
+
+///ITK Model Cut 1
+ITKpartCut1Files.forEach((ITKfile1, index) => {
+  window.gltfLoader.load(
+    "https://tracer-geometry.web.cern.ch/" + ITKfile1,
+    function (gltf) {
+      const ITK1part = gltf.scene;
+      ITKgateCut1Group.add(ITK1part);
+      ITKloadedPartsCut1++;
+
+      console.log(`Part ${index + 1} of itk1 model loaded successfully.`);
+      if (ITKloadedParts1 === ITKpartCut1Files.length) {
+        window.ITKModelCut1 = ITKgateCut1Group;
+        ITK1Loaded = true;
+        console.log("ITK Cut 1 model loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of ITK 1 model:`, error);
+    }
+  );
+});
+
+///ITK Model Cut 2
+ITKpartCut2Files.forEach((ITKfile2, index) => {
+  window.gltfLoader.load(
+    "https://tracer-geometry.web.cern.ch/" + ITKfile2,
+    function (gltf) {
+      const ITK2part = gltf.scene;
+      ITKgateCut2Group.add(ITK2part);
+      ITKloadedPartsCut2++;
+
+      console.log(`Part ${index + 1} of itk2 model loaded successfully.`);
+      if (ITKloadedParts2 === ITKpartCut2Files.length) {
+        window.ITKModelCut2 = ITKgateCut2Group;
+        ITK2Loaded = true;
+        console.log("ITK Cut 2 model loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of ITK 2 model:`, error);
+    }
+  );
+});
+
+
 
 // Reticle class
 class Reticle extends THREE.Object3D {

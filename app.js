@@ -65,6 +65,7 @@ class App {
     this.originalLog = console.log;
     this.CalisSelected = false;
     this.MSisSelected = false;
+    this.ITKisSelected = false;
 
 
     // We'll update the camera matrices directly from API, so
@@ -80,6 +81,7 @@ class App {
     this.hex0.addEventListener('click', this.onHexClick);
     this.hex1.addEventListener('click', () => this.selectModel('gate'));
     this.hex2.addEventListener('click', () => this.selectModel('cal'));
+    this.hex3.addEventListener('click', () => this.selectModel('ITK'));
     this.cut1.addEventListener('click', () => this.cycleCutState('cut1'));
     this.cut2.addEventListener('click', () => this.cycleCutState('cut2'));
     this.uncut.addEventListener('click', () => this.cycleCutState('uncut'));
@@ -172,6 +174,8 @@ class App {
       this.selectedModel = window.gateModel;
     } else if (modelName === 'cal') {
       this.selectedModel = window.calModel;
+    } else if (modelName === 'ITK') {
+      this.selectedModel = window.ITKModel;
     }
   
     this.otherHexes.forEach(hex => hex.classList.toggle('hidden'));
@@ -189,21 +193,31 @@ class App {
       let selectedGroup = null;
   
       if (state === 'cut1') {
-        selectedGroup = this.CalisSelected ? CgateCut1Group : MSgateCut1Group;
+        selectedGroup = this.CalisSelected 
+          ? CgateCut1Group 
+          : (this.ITKisSelected ? ITKgateCut1Group : MSgateCut1Group);
+      
         this.cut1.classList.add('hidden');
         this.uncut.classList.add('hidden');
         this.cut2.classList.remove('hidden');
       } else if (state === 'cut2') {
-        selectedGroup = this.CalisSelected ? CgateCut2Group : MSgateCut2Group;
+        selectedGroup = this.CalisSelected 
+          ? CgateCut2Group 
+          : (this.ITKisSelected ? ITKgateCut2Group : MSgateCut2Group);
+      
         this.cut2.classList.add('hidden');
         this.cut1.classList.add('hidden');
         this.uncut.classList.remove('hidden');
       } else if (state === 'uncut') {
-        selectedGroup = this.CalisSelected ? CgateGroup : MSgateGroup;
+        selectedGroup = this.CalisSelected 
+          ? CgateGroup 
+          : (this.ITKisSelected ? ITKgateGroup : MSgateGroup);
+      
         this.uncut.classList.add('hidden');
         this.cut2.classList.add('hidden');
         this.cut1.classList.remove('hidden');
       }
+          
   
       if (selectedGroup) {
         const newClone = selectedGroup.clone();
@@ -288,7 +302,7 @@ class App {
     this.xrSession.addEventListener("select", this.onSelect);
   }
 
-  /** Place a sunflower when the screen is tapped. */
+  /** Place an object when the screen is tapped. */
   onSelect = () => {
     if (this.buttonClicked) {
       this.buttonClicked = false;
@@ -307,15 +321,23 @@ class App {
       this.distance = this.camera.position.distanceTo(this.reticle.position);
       this.scaleG = 0.01 * this.distance;
       this.scaleC = 0.02 * this.distance;
+      this.scaleITK = 0.02 * this.distance;
 
       if (this.selectedModel === window.gateModel) {
         clone.scale.set(this.scaleG, this.scaleG, this.scaleG);
         this.MSisSelected = true;
         this.CalisSelected = false;
+        this.ITKisSelected = false;
       } else if (this.selectedModel === window.calModel) {
         clone.scale.set(this.scaleC, this.scaleC, this.scaleC);
-        this.MSisSelected = false;
         this.CalisSelected = true;
+        this.MSisSelected = false;
+        this.ITKisSelected = false;
+      } else if (this.selectedModel = window.ITKModel) {
+        clone.scale.set(this.scaleITK, this.scaleITK, this.scaleITK);
+        this.ITKisSelected = true;
+        this.MSisSelected = false;
+        this.CalisSelected = false;
       }
 
       this.scene.add(clone);
