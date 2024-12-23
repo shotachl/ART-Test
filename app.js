@@ -53,11 +53,12 @@ class App {
     this.buttonClicked = false;
     this.hexClicked = false;
     this.button = document.getElementById("buttonid");
-    this.otherHexes = document.querySelectorAll(".hex.pos1, .hex.pos2, .hex.pos3, .hex.pos4");
+    this.otherHexes = document.querySelectorAll(".hex.pos1, .hex.pos2, .hex.pos3, .hex.pos4, .hex.pos8, .hex.pos9, .hex.pos10");
     this.hex0 = document.querySelector(".hex.pos0");
     this.hex1 = document.querySelector(".hex.pos1");
     this.hex2 = document.querySelector(".hex.pos2");
     this.hex3 = document.querySelector(".hex.pos3");
+    this.hex4 = document.querySelector(".hex.pos4");
     this.cut1 = document.querySelector(".hex.pos8");
     this.cut2 = document.querySelector(".hex.pos9");
     this.uncut = document.querySelector(".hex.pos10");
@@ -66,6 +67,7 @@ class App {
     this.CalisSelected = false;
     this.MSisSelected = false;
     this.ITKisSelected = false;
+    this.MuonisSelected = false;
 
 
     // We'll update the camera matrices directly from API, so
@@ -81,7 +83,8 @@ class App {
     this.hex0.addEventListener('click', this.onHexClick);
     this.hex1.addEventListener('click', () => this.selectModel('gate'));
     this.hex2.addEventListener('click', () => this.selectModel('cal'));
-    this.hex3.addEventListener('click', () => this.selectModel('ITK'));
+    this.hex3.addEventListener('click', () => this.selectModel('itk'));
+    this.hex4.addEventListener('click', () => this.selectModel('muon'));
     this.cut1.addEventListener('click', () => this.cycleCutState('cut1'));
     this.cut2.addEventListener('click', () => this.cycleCutState('cut2'));
     this.uncut.addEventListener('click', () => this.cycleCutState('uncut'));
@@ -150,23 +153,25 @@ class App {
   onButtonClick = (event) => {
     this.buttonClicked = true;
     event.stopPropagation()
-    this.scene.remove(this.lastClone);
-    this.lastClone = null;
-    clicks = 0;
+    
+    if (this.lastClone) {
+      this.scene.remove(this.lastClone);
+      this.lastClone = null;
 
-    if(this.lastClone = null && clicks == 0){
-      this.reticle.visible = true;
+      this.hex1.style.backgroundImage = "url('./shared/hex.png')";
+      this.hex2.style.backgroundImage = "url('./shared/hex.png')";
+      this.hex3.style.backgroundImage = "url('./shared/hex.png')";
+      this.hex4.style.backgroundImage = "url('./shared/hex.png')";
     }
+
+    clicks = 0;
   }
 
-  onHexClick = () => {
+  onHexClick = (event) => {
+    event.stopPropagation();
     this.hexClicked = true;
-    this.otherHexes.forEach(hex =>{
-      if (!hex.classList.contains('pos8')) {
-      hex.classList.toggle('hidden');
-      }
-    })
-  }
+    this.otherHexes.forEach(hex => hex.classList.toggle('hidden'));
+};
 
   selectModel(modelName) {
     this.hexClicked = true;
@@ -174,14 +179,17 @@ class App {
       this.selectedModel = window.gateModel;
     } else if (modelName === 'cal') {
       this.selectedModel = window.calModel;
-    } else if (modelName === 'ITK') {
+    } else if (modelName === 'itk') {
       this.selectedModel = window.ITKModel;
-    }
-  
-    this.otherHexes.forEach(hex => hex.classList.toggle('hidden'));
+    } else if (modelName === "muon"){
+      this.selectedModel = window.muonModel;
+    }  
   }
 
   cycleCutState = (state) => {
+    this.cut1.style.backgroundImage = "url('./shared/hex.png')";
+    this.cut2.style.backgroundImage = "url('./shared/hex.png')";
+    this.uncut.style.backgroundImage = "url('./shared/hex.png')";
     if (this.lastClone) {
       const originalScale = this.lastClone.scale.clone();
       const originalRotation = this.lastClone.rotation.clone();
@@ -193,31 +201,27 @@ class App {
       let selectedGroup = null;
   
       if (state === 'cut1') {
+        this.cut1.style.backgroundImage = "url('./shared/filledHex.png')";
         selectedGroup = this.CalisSelected 
-          ? CgateCut1Group 
-          : (this.ITKisSelected ? ITKgateCut1Group : MSgateCut1Group);
-      
-        this.cut1.classList.add('hidden');
-        this.uncut.classList.add('hidden');
-        this.cut2.classList.remove('hidden');
+          ? CCut1Group 
+          : (this.ITKisSelected 
+            ? ITKCut1Group 
+            : (this.MuonisSelected ? muonCut1Group : MSCut1Group));
       } else if (state === 'cut2') {
+        this.cut2.style.backgroundImage = "url('./shared/filledHex.png')";
         selectedGroup = this.CalisSelected 
-          ? CgateCut2Group 
-          : (this.ITKisSelected ? ITKgateCut2Group : MSgateCut2Group);
-      
-        this.cut2.classList.add('hidden');
-        this.cut1.classList.add('hidden');
-        this.uncut.classList.remove('hidden');
+          ? CCut2Group 
+          : (this.ITKisSelected 
+            ? ITKCut2Group 
+            : (this.MuonisSelected ? muonCut2Group : MSCut2Group));
       } else if (state === 'uncut') {
+        this.uncut.style.backgroundImage = "url('./shared/filledHex.png')";
         selectedGroup = this.CalisSelected 
-          ? CgateGroup 
-          : (this.ITKisSelected ? ITKgateGroup : MSgateGroup);
-      
-        this.uncut.classList.add('hidden');
-        this.cut2.classList.add('hidden');
-        this.cut1.classList.remove('hidden');
-      }
-          
+          ? CGroup 
+          : (this.ITKisSelected 
+            ? ITKGroup 
+            : (this.MuonisSelected ? muonGroup : MSGroup));
+      }   
   
       if (selectedGroup) {
         const newClone = selectedGroup.clone();
@@ -322,23 +326,37 @@ class App {
       this.scaleG = 0.01 * this.distance;
       this.scaleC = 0.02 * this.distance;
       this.scaleITK = 0.02 * this.distance;
+      this.scaleM = 0.01 * this.distance;
 
       if (this.selectedModel === window.gateModel) {
         clone.scale.set(this.scaleG, this.scaleG, this.scaleG);
+        this.hex1.style.backgroundImage = "url('./shared/filledHex.png')";
         this.MSisSelected = true;
         this.CalisSelected = false;
         this.ITKisSelected = false;
+        this.MuonisSelected = false;
       } else if (this.selectedModel === window.calModel) {
         clone.scale.set(this.scaleC, this.scaleC, this.scaleC);
+        this.hex2.style.backgroundImage = "url('./shared/filledHex.png')";
         this.CalisSelected = true;
         this.MSisSelected = false;
         this.ITKisSelected = false;
-      } else if (this.selectedModel = window.ITKModel) {
+        this.MuonisSelected = false;
+      } else if (this.selectedModel === window.muonModel) {
+        clone.scale.set(this.scaleM, this.scaleM, this.scaleM);
+        this.hex4.style.backgroundImage = "url('./shared/filledHex.png')";
+        this.MuonisSelected = true;
+        this.ITKisSelected = false;
+        this.MSisSelected = false;
+        this.CalisSelected = false;
+      } else if (this.selectedModel === window.ITKModel) {
         clone.scale.set(this.scaleITK, this.scaleITK, this.scaleITK);
+        this.hex3.style.backgroundImage = "url('./shared/filledHex.png')";
         this.ITKisSelected = true;
         this.MSisSelected = false;
         this.CalisSelected = false;
-      }
+        this.MuonisSelected = false;
+      } 
 
       this.scene.add(clone);
       this.lastClone = clone;
@@ -402,11 +420,9 @@ class App {
         if(clicks < 1){
           this.reticle.visible = true;
           this.button.style.display = "none";
-          this.cut1.classList.add('hidden');
         }else if(clicks >= 1){
           this.reticle.visible = false;
           this.button.style.display = "block";
-          this.cut1.classList.remove('hidden');
         }
 
         if (clicks === 0) {
