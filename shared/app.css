@@ -1,19 +1,4 @@
-/*
- * Copyright 2017 Google Inc. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
- body {
+  body {
   font-family: monospace;
   margin: 0;
   overflow: hidden;
@@ -107,27 +92,27 @@ body.ar.stabilized #stabilization {
 #wrong-hosting-root { display: none; }
 
 #buttonid {
-  border: 2.5px solid #0448a3; /* Increased border thickness */
+  border: 0.16rem solid #00B400;
   background-color: transparent;
   border-radius: 30%;
   color: #fff;
   cursor: pointer;
   font-family: "Space Grotesk", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
-  padding: 16px;
+  padding: 1rem;
   text-align: center;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
   transition: all .2s cubic-bezier(.22, .61, .36, 1);
   position: fixed;
-  bottom: 60px;
+  bottom: 10vh;
   left: 50%;
   transform: translateX(-50%);
-  width: 70px;
-  height: 70px;
-  line-height: 38px; 
+  width: 5rem;
+  height: 5rem;
+  line-height: 2.375rem;
 }
 
 .container{
@@ -140,10 +125,10 @@ body.ar.stabilized #stabilization {
   display: inline-block;
   position: absolute;
   text-align: center;
-  font-size: 24px;
+  font-size: 1.5rem;
   line-height: 1;
-  width: 90px;
-  height: 90px;
+  width: 5.625rem;
+  height: 5.625rem;
   background-image: url('./hex.png');
   background-size: cover;
   background-position: center;
@@ -157,7 +142,7 @@ body.ar.stabilized #stabilization {
   transform: translate(-50%, -50%);
   color: white;
   font-family: monospace;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .hidden {

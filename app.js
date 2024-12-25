@@ -152,7 +152,7 @@ class App {
 
   onButtonClick = (event) => {
     this.buttonClicked = true;
-    event.stopPropagation()
+    event.stopPropagation();
     
     if (this.lastClone) {
       this.scene.remove(this.lastClone);
@@ -171,7 +171,7 @@ class App {
     event.stopPropagation();
     this.hexClicked = true;
     this.otherHexes.forEach(hex => hex.classList.toggle('hidden'));
-};
+  };
 
   selectModel(modelName) {
     this.hexClicked = true;
@@ -187,6 +187,11 @@ class App {
   }
 
   cycleCutState = (state) => {
+    if (!this.lastClone) {
+      console.warn('No object is spawned. Please place an object before interacting with the cut buttons.');
+      return; // Exit the function if no object is spawned
+    }
+
     this.cut1.style.backgroundImage = "url('./shared/hex.png')";
     this.cut2.style.backgroundImage = "url('./shared/hex.png')";
     this.uncut.style.backgroundImage = "url('./shared/hex.png')";
@@ -308,12 +313,8 @@ class App {
 
   /** Place an object when the screen is tapped. */
   onSelect = () => {
-    if (this.buttonClicked) {
+    if (this.buttonClicked || this.hexClicked) {
       this.buttonClicked = false;
-      return;
-    }
-
-    if (this.hexClicked) {
       this.hexClicked = false;
       return;
     }
@@ -360,6 +361,7 @@ class App {
 
       this.scene.add(clone);
       this.lastClone = clone;
+      this.uncut.style.backgroundImage = "url('./shared/filledHex.png')";
         
       const interactionPlane = new THREE.Mesh(
         new THREE.PlaneGeometry(2, 2),
@@ -420,6 +422,9 @@ class App {
         if(clicks < 1){
           this.reticle.visible = true;
           this.button.style.display = "none";
+          this.cut1.style.backgroundImage = "url('./shared/hex.png')";
+          this.cut2.style.backgroundImage = "url('./shared/hex.png')";
+          this.uncut.style.backgroundImage = "url('./shared/hex.png')";
         }else if(clicks >= 1){
           this.reticle.visible = false;
           this.button.style.display = "block";

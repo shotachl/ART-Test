@@ -180,6 +180,7 @@ const ITKpartCut2Files = [
   "itk-strip-endcup-detector-sidea-cut3.glb", 
   "itk-strip-endcup-detector-sidec-cut3.glb"
 ];
+
 const muonpartCut2Files = [
   "muon-barrel-inner-cut3.glb",
   "muon-barrel-middle-cut3.glb",
