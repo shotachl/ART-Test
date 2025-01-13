@@ -17,6 +17,8 @@ let clicks = 0;
  */
 class App {
   constructor() {
+    // this.spawnedObjects = [];
+    this.initialObjectSpawned = false;
     this.selectedModel = null;
     this.logOutput = document.getElementById('logOutput');
     const originalLog = console.log;
@@ -154,6 +156,9 @@ class App {
     this.buttonClicked = true;
     event.stopPropagation();
     
+    // this.spawnedObjects.forEach(object => this.scene.remove(object));
+    // this.spawnedObjects = [];
+
     if (this.lastClone) {
       this.scene.remove(this.lastClone);
       this.lastClone = null;
@@ -171,6 +176,12 @@ class App {
     event.stopPropagation();
     this.hexClicked = true;
     this.otherHexes.forEach(hex => hex.classList.toggle('hidden'));
+
+    if(this.hexClicked === true){
+      this.hex0.style.backgroundImage = "url('./shared/filledHex.png')";
+    } else {
+      this.hex0.style.backgroundImage = "url('./shared/hex.png')";
+    }
   };
 
   selectModel(modelName) {
@@ -360,7 +371,12 @@ class App {
       } 
 
       this.scene.add(clone);
+      // this.spawnedObjects.push(clone);
+
       this.lastClone = clone;
+
+      this.initialObjectSpawned = true;
+
       this.uncut.style.backgroundImage = "url('./shared/filledHex.png')";
         
       const interactionPlane = new THREE.Mesh(
