@@ -91,32 +91,6 @@ body.ar.stabilized #stabilization {
 
 #wrong-hosting-root { display: none; }
 
-#buttonid {
-  all: unset;
-  background-image: url('./hex.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  width: 5.625rem;
-  height: 5.625rem;
-  position: absolute;
-  top: 5px;
-  left: 84px;
-  display: flex; /* Use flexbox for centering */
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
-  text-align: center; /* Ensure text is centered */
-}
-
-#buttonid span {
-  color: white !important;
-  font-family: "Space Grotesk", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size: 1.125rem;
-  font-weight: 700;
-}
-
-
 .container{
   position: relative;
   width: 100%;
@@ -124,6 +98,7 @@ body.ar.stabilized #stabilization {
 }
 
 .hex {
+  pointer-events: auto;
   display: inline-block;
   position: absolute;
   text-align: center;
@@ -132,6 +107,20 @@ body.ar.stabilized #stabilization {
   width: 5.625rem;
   height: 5.625rem;
   background-image: url('./hex.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hex.filled {
+  display: inline-block;
+  position: absolute;
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  width: 5.625rem;
+  height: 5.625rem;
+  background-image: url('./filledHex.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -149,6 +138,15 @@ body.ar.stabilized #stabilization {
 
 .hidden {
   display: none;
+}
+
+.reset {
+  top: 5px;
+  left: 84px;
+}
+
+.reset span {
+  font-size: 1.5rem;
 }
 
 .pos0 span {

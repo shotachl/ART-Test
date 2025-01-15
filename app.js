@@ -1,7 +1,7 @@
 (async function() {
   const isArSessionSupported = navigator.xr && navigator.xr.isSessionSupported && await navigator.xr.isSessionSupported("immersive-ar");
-  document.getElementById("buttonid").style.display = "none";
   document.querySelector(".hex.pos0").style.display = "none";
+  document.querySelector(".hex.reset").style.display = "none";
   if (isArSessionSupported) {
     document.getElementById("enter-ar").addEventListener("click", window.app.activateXR)
   } else {
@@ -54,7 +54,7 @@ class App {
     this.lastTouchX;
     this.buttonClicked = false;
     this.hexClicked = false;
-    this.button = document.getElementById("buttonid");
+    this.button = document.querySelector(".hex.reset");
     this.otherHexes = document.querySelectorAll(".hex.pos1, .hex.pos2, .hex.pos3, .hex.pos4, .hex.pos8, .hex.pos9, .hex.pos10");
     this.hex0 = document.querySelector(".hex.pos0");
     this.hex1 = document.querySelector(".hex.pos1");
@@ -87,12 +87,28 @@ class App {
     this.hex2.addEventListener('click', () => this.selectModel('cal'));
     this.hex3.addEventListener('click', () => this.selectModel('itk'));
     this.hex4.addEventListener('click', () => this.selectModel('muon'));
-    this.cut1.addEventListener('click', () => this.cycleCutState('cut1'));
-    this.cut2.addEventListener('click', () => this.cycleCutState('cut2'));
-    this.uncut.addEventListener('click', () => this.cycleCutState('uncut'));
-    // this.hex3.addEventListener('click', () => this.selectModel('cal'));
+    // this.cut1.addEventListener('click', () => this.cycleCutState('cut1'));
+    // this.cut2.addEventListener('click', () => this.cycleCutState('cut2'));
+    // this.uncut.addEventListener('click', () => this.cycleCutState('uncut'));
+
+    this.cut1.addEventListener('click', (event) => {
+      event.stopPropagation();
+      this.cycleCutState('cut1');
+    });
+    
+    this.cut2.addEventListener('click', (event) => {
+      event.stopPropagation();
+      this.cycleCutState('cut2');
+    });
+    
+    this.uncut.addEventListener('click', (event) => {
+      event.stopPropagation();
+      this.cycleCutState('uncut');
+    });
 
     this.hex0.style.display = "inline-block";
+    this.button.style.display = "inline-block";
+
   }
 
   onTouchStart = (event) => {
@@ -177,30 +193,34 @@ class App {
     this.hexClicked = true;
     this.otherHexes.forEach(hex => hex.classList.toggle('hidden'));
 
-    if(this.hexClicked === true){
-      this.hex0.style.backgroundImage = "url('./shared/filledHex.png')";
-    } else {
-      this.hex0.style.backgroundImage = "url('./shared/hex.png')";
-    }
+    this.hex0.classList.toggle('filled');
   };
 
   selectModel(modelName) {
     this.hexClicked = true;
-    if (modelName === 'gate') {
-      this.selectedModel = window.gateModel;
-    } else if (modelName === 'cal') {
-      this.selectedModel = window.calModel;
-    } else if (modelName === 'itk') {
-      this.selectedModel = window.ITKModel;
-    } else if (modelName === "muon"){
-      this.selectedModel = window.muonModel;
-    }  
+    
+    switch (modelName) {
+      case 'gate':
+        this.selectedModel = window.gateModel;
+        break;
+      case 'cal':
+        this.selectedModel = window.calModel;
+        break;
+      case 'itk':
+        this.selectedModel = window.ITKModel;
+        break;
+      case 'muon':
+        this.selectedModel = window.muonModel;
+        break;
+      default:
+        console.error('Invalid model name:', modelName);
+        return;
+    }
   }
 
   cycleCutState = (state) => {
     if (!this.lastClone) {
-      console.warn('No object is spawned. Please place an object before interacting with the cut buttons.');
-      return; // Exit the function if no object is spawned
+      return;
     }
 
     this.cut1.style.backgroundImage = "url('./shared/hex.png')";
@@ -437,13 +457,13 @@ class App {
         // Update the reticle position
         if(clicks < 1){
           this.reticle.visible = true;
-          this.button.style.display = "none";
           this.cut1.style.backgroundImage = "url('./shared/hex.png')";
           this.cut2.style.backgroundImage = "url('./shared/hex.png')";
           this.uncut.style.backgroundImage = "url('./shared/hex.png')";
+          this.button.style.backgroundImage = "url('./shared/hex.png')";
         }else if(clicks >= 1){
           this.reticle.visible = false;
-          this.button.style.display = "block";
+          this.button.style.backgroundImage = "url('./shared/filledHex.png')";
         }
 
         if (clicks === 0) {
