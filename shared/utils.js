@@ -122,9 +122,6 @@ const muonpartCut1Files = [
   "muon-barrel-inner-cut2.glb",
   "muon-barrel-middle-cut2.glb",
   "muon-barrel-outer-cut2.glb",
-  "muon-endcap-bigwheel-cut2.glb",
-  "muon-endcap-extrawheel-cut2.glb",
-  "muon-endcap-outerwheel-cut2.glb",
   "muon-extra-wheel-sidea-cut2.glb",
   "muon-extra-wheel-sidec-cut2.glb",
   "muon-extra-wheel-cut2.glb",
@@ -185,9 +182,6 @@ const muonpartCut2Files = [
   "muon-barrel-inner-cut3.glb",
   "muon-barrel-middle-cut3.glb",
   "muon-barrel-outer-cut3.glb",
-  "muon-endcap-bigwheel-cut3.glb",
-  "muon-endcap-extrawheel-cut3.glb",
-  "muon-endcap-outerwheel-cut3.glb",
   "muon-extra-wheel-sidea-cut3.glb",
   "muon-extra-wheel-sidec-cut3.glb",
   "muon-extra-wheel-cut3.glb",
@@ -374,29 +368,6 @@ CpartCut2Files.forEach((Cfile2, index) => {
   );
 });
 
-///Muon Model Cut 1
-muonpartCut1Files.forEach((muonfile1, index) => {
-  window.gltfLoader.load(
-    "https://tracer-geometry.web.cern.ch/" + muonfile1,
-    function (gltf) {
-      const muonpart1 = gltf.scene;
-      muonCut1Group.add(muonpart1);
-      muonloadedPartsCut1++;
-
-      // console.log(`Part ${index + 1} of gate model loaded successfully.`);
-      if (muonloadedPartsCut1 === muonpartCut1Files.length) {
-        window.muonModelCut1 = muonCut1Group;
-        muon1Loaded = true;
-        // console.log("muon cut 1 loaded successfully.");
-      }
-    },
-    undefined,
-    function (error) {
-      console.error(`Error loading part ${index + 1} of muon 1 model:`, error);
-    }
-  );
-});
-
 ///Muon Model Uncut
 muonpartFiles.forEach((muonfile, index) => {
   window.gltfLoader.load(
@@ -416,6 +387,29 @@ muonpartFiles.forEach((muonfile, index) => {
     undefined,
     function (error) {
       console.error(`Error loading part ${index + 1} of muon model:`, error);
+    }
+  );
+});
+
+///Muon Model Cut 1
+muonpartCut1Files.forEach((muonfile1, index) => {
+  window.gltfLoader.load(
+    "https://tracer-geometry.web.cern.ch/" + muonfile1,
+    function (gltf) {
+      const muonpart1 = gltf.scene;
+      muonCut1Group.add(muonpart1);
+      muonloadedPartsCut1++;
+
+      // console.log(`Part ${index + 1} of gate model loaded successfully.`);
+      if (muonloadedPartsCut1 === muonpartCut1Files.length) {
+        window.muonModelCut1 = muonCut1Group;
+        muon1Loaded = true;
+        // console.log("muon cut 1 loaded successfully.");
+      }
+    },
+    undefined,
+    function (error) {
+      console.error(`Error loading part ${index + 1} of muon 1 model:`, error);
     }
   );
 });
