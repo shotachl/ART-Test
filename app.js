@@ -81,7 +81,7 @@ class App {
     this.logOutPut = document.getElementById("logOutput");
     this.originalLog = console.log;
     this.CalisSelected = false;
-    this.MSisSelected = false;
+    this.MGNTisSelected = false;
     this.ITKisSelected = false;
     this.MuonisSelected = false;
 
