@@ -243,7 +243,7 @@ MSpartFiles.forEach((MSfile, index) => {
       if (MSloadedParts === MSpartFiles.length) {
         window.gateModel = MSGroup;
         gateLoaded = true;
-        // console.log("magnet loaded successfully.");
+        console.log("magnet loaded successfully.");
       }
     },
     undefined,
@@ -266,7 +266,7 @@ MSpartCut1Files.forEach((MSfileCut1, index) => {
       if (MSloadedPartsCut1 === MSpartCut1Files.length) {
         window.gateModelCut1 = MSCut1Group;
         gate1Loaded = true;
-        // console.log("magnet 1 model loaded successfully.");
+        console.log("magnet 1 model loaded successfully.");
       }
     },
     undefined,
@@ -289,7 +289,7 @@ MSpartCut2Files.forEach((MSfileCut2, index) => {
       if (MSloadedPartsCut2 === MSpartCut2Files.length) {
         window.gateModelCut2 = MSCut2Group;
         gate2Loaded = true;
-        // console.log("magnet 2 model loaded successfully.");
+        console.log("magnet 2 model loaded successfully.");
       }
     },
     undefined,
@@ -312,7 +312,7 @@ CpartFiles.forEach((Cfile, index) => {
       if (CloadedParts === CpartFiles.length) {
         window.calModel = CGroup;
         calLoaded = true;
-        // console.log("cal model loaded successfully.");
+        console.log("cal model loaded successfully.");
       }
     },
     undefined,
@@ -335,7 +335,7 @@ CpartCut1Files.forEach((Cfile1, index) => {
       if (CloadedPartsCut1 === CpartCut1Files.length) {
         window.calModelCut1 = CCut1Group;
         cal1Loaded = true;
-        // console.log("cal model 1 loaded successfully.");
+        console.log("cal model 1 loaded successfully.");
       }
     },
     undefined,
@@ -358,7 +358,7 @@ CpartCut2Files.forEach((Cfile2, index) => {
       if (CloadedPartsCut2 === CpartCut2Files.length) {
         window.calModelCut2 = CCut2Group;
         cal2Loaded = true;
-        // console.log("cal model 2 loaded successfully.");
+        console.log("cal model 2 loaded successfully.");
       }
     },
     undefined,
@@ -381,7 +381,7 @@ muonpartFiles.forEach((muonfile, index) => {
       if (muonloadedParts === muonpartFiles.length) {
         window.muonModel = muonGroup;
         muonLoaded = true;
-        // console.log("muon loaded successfully.");
+        console.log("muon loaded successfully.");
       }
     },
     undefined,
@@ -404,7 +404,7 @@ muonpartCut1Files.forEach((muonfile1, index) => {
       if (muonloadedPartsCut1 === muonpartCut1Files.length) {
         window.muonModelCut1 = muonCut1Group;
         muon1Loaded = true;
-        // console.log("muon cut 1 loaded successfully.");
+        console.log("muon cut 1 loaded successfully.");
       }
     },
     undefined,
@@ -427,7 +427,7 @@ muonpartCut2Files.forEach((muonfile2, index) => {
       if (muonloadedPartsCut2 === muonpartCut2Files.length) {
         window.muonModelCut2 = muonCut2Group;
         muon2Loaded = true;
-        // console.log("muon cut 2 loaded successfully.");
+        console.log("muon cut 2 loaded successfully.");
       }
     },
     undefined,
@@ -446,7 +446,7 @@ ITKpartFiles.forEach((ITKfile, index) => {
       ITKGroup.add(ITKpart);
       ITKloadedParts++;
 
-      console.log(`Part ${index + 1} (${ITKfile}) of ITK model loaded successfully.`);
+      // console.log(`Part ${index + 1} (${ITKfile}) of ITK model loaded successfully.`);
       if (ITKloadedParts === ITKpartFiles.length) {
         window.ITKModel = ITKGroup;
         ITKLoaded = true;
@@ -469,7 +469,7 @@ ITKpartCut1Files.forEach((ITKfile1, index) => {
       ITKCut1Group.add(ITK1part);
       ITKloadedPartsCut1++;
 
-      console.log(`Part ${index + 1} of itk1 model loaded successfully.`);
+      // console.log(`Part ${index + 1} of itk1 model loaded successfully.`);
       if (ITKloadedPartsCut1 === ITKpartCut1Files.length) {
         window.ITKModelCut1 = ITKCut1Group;
         ITK1Loaded = true;
@@ -492,7 +492,7 @@ ITKpartCut2Files.forEach((ITKfile2, index) => {
       ITKCut2Group.add(ITK2part);
       ITKloadedPartsCut2++;
 
-      console.log(`Part ${index + 1} of itk2 model loaded successfully.`);
+      // console.log(`Part ${index + 1} of itk2 model loaded successfully.`);
       if (ITKloadedPartsCut2 === ITKpartCut2Files.length) {
         window.ITKModelCut2 = ITKCut2Group;
         ITK2Loaded = true;

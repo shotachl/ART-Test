@@ -10,8 +10,6 @@
   }
 })();
 
-let clicks = 0;
-
 class App {
   constructor() {
     this.sharedRotation = new THREE.Euler();
@@ -38,17 +36,6 @@ class App {
     this.MuonCut2 = window.muonModelCut2;
     this.ITKCut1 = window.ITKModelCut1;
     this.ITKCut2 = window.ITKModelCut2;
-
-    // this.logOutput = document.getElementById('logOutput');
-    // const originalLog = console.log;
-    // console.log = (...args) => {
-    //   originalLog.apply(console, args);
-    //   const message = args.join(' ');
-    //   const logElement = document.createElement('div');
-    //   logElement.textContent = message;
-    //   this.logOutput.appendChild(logElement);
-    //   this.logOutput.scrollTop = this.logOutput.scrollHeight;
-    // };
   }
 
   setupThreeJs() {
@@ -78,7 +65,6 @@ class App {
     this.cut1 = document.querySelector(".hex.pos8");
     this.cut2 = document.querySelector(".hex.pos9");
     this.uncut = document.querySelector(".hex.pos10");
-    this.logOutPut = document.getElementById("logOutput");
     this.originalLog = console.log;
     this.CalisSelected = false;
     this.MGNTisSelected = false;
@@ -240,21 +226,33 @@ class App {
         case 'cut2':
           modelToAdd = this.MGNTCut2;
           break;
+        case 'uncut':
+          modelToAdd = this.MGNT;
+          break;
         default: 
           modelToAdd = this.MGNT;
           break;
       }
-  
-      modelToAdd.position.copy(this.firstObjectPosition);
-      modelToAdd.rotation.copy(this.sharedRotation);
-      modelToAdd.scale.copy(this.sharedScale);
-  
-      this.scene.add(modelToAdd);
-      this.MGNTisSelected = true;
-      this.hasObjects = true; 
 
-      this.updateCutButtonStyles();
-      this.updateDeleteButtonStyle();
+      console.log(this.reticle.visible);
+
+      if (modelToAdd) {
+        modelToAdd.position.copy(this.firstObjectPosition);
+        modelToAdd.rotation.copy(this.sharedRotation);
+        modelToAdd.scale.copy(this.sharedScale);
+    
+        this.scene.add(modelToAdd);
+        this.MGNTisSelected = true;
+        this.hasObjects = true; 
+
+        this.updateCutButtonStyles();
+      } else {
+        console.log(this.reticle.position);
+        console.log(this.firstObjectPosition);
+        console.error('modelToAdd is undefined');
+        // console.log(this.currentCutState);
+        // console.log(modelToAdd);
+      }
     }
   };
 
@@ -294,7 +292,6 @@ class App {
       this.hasObjects = true; 
 
       this.updateCutButtonStyles();
-      this.updateDeleteButtonStyle();
     }
   };
   
@@ -334,7 +331,6 @@ class App {
       this.hasObjects = true;
 
       this.updateCutButtonStyles();
-      this.updateDeleteButtonStyle();
     }
   };
   
@@ -374,7 +370,6 @@ class App {
       this.hasObjects = true; 
 
       this.updateCutButtonStyles();
-      this.updateDeleteButtonStyle();
     }
   };
 
@@ -422,6 +417,8 @@ class App {
         else if (model === this.Muon) newModel = this.originalMuon;
         break;
     }
+    // console.log(newModel);
+    // console.log(this.currentCutState);
   
     newModel.position.copy(position);
     newModel.rotation.copy(rotation);
@@ -445,6 +442,17 @@ class App {
       this.Muon = newModel;
       this.MuonisSelected = true;
     }
+
+    this.attachEventListeners(newModel);
+  };
+
+  attachEventListeners = (model) => {
+    model.addEventListener('touchstart', this.onTouchStart);
+    model.addEventListener('touchmove', this.onTouchMove);
+    model.addEventListener('touchend', this.onTouchEnd);
+    model.addEventListener('mousedown', this.onMouseDown);
+    model.addEventListener('mousemove', this.onMouseMove);
+    model.addEventListener('mouseup', this.onMouseUp);
   };
 
   updateCutButtonStyles = () => {
@@ -464,16 +472,6 @@ class App {
       default: 
         this.uncut.style.backgroundImage = "url('./shared/filledHex.png')";
         break;
-    }
-
-    this.updateDeleteButtonStyle();
-  };
-
-  updateDeleteButtonStyle = () => {
-    if (this.hasObjects) {
-      this.button.style.backgroundImage = "url('./shared/filledHex.png')";
-    } else {
-      this.button.style.backgroundImage = "url('./shared/hex.png')";
     }
   };
 
