@@ -17,6 +17,22 @@ class App {
     this.firstObjectPosition = null;
     this.hasObjects = false;
     this.currentCutState = 'uncut'; 
+  }
+
+  setupThreeJs() {
+    this.renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      preserveDrawingBuffer: true,
+      canvas: this.canvas,
+      context: this.gl
+    });
+    this.renderer.autoClear = false;
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    this.scene = DemoUtils.createLitScene();
+    this.reticle = new Reticle();
+    this.scene.add(this.reticle);
 
     this.originalMGNT = window.gateModel;
     this.originalCal = window.calModel;
@@ -36,22 +52,7 @@ class App {
     this.MuonCut2 = window.muonModelCut2;
     this.ITKCut1 = window.ITKModelCut1;
     this.ITKCut2 = window.ITKModelCut2;
-  }
 
-  setupThreeJs() {
-    this.renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      preserveDrawingBuffer: true,
-      canvas: this.canvas,
-      context: this.gl
-    });
-    this.renderer.autoClear = false;
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-    this.scene = DemoUtils.createLitScene();
-    this.reticle = new Reticle();
-    this.scene.add(this.reticle);
     this.touchX;
     this.buttonClicked = false;
     this.hexClicked = true;
@@ -192,6 +193,11 @@ class App {
     this.CalisSelected = false;
     this.ITKisSelected = false;
     this.MuonisSelected = false;
+
+    this.MGNT = this.originalMGNT;
+    this.Cal = this.originalCal;
+    this.ITK = this.originalITK;
+    this.Muon = this.originalMuon;
   
     this.updateObjectState();
   };
@@ -207,8 +213,10 @@ class App {
   onMGNT = () => {
     if (this.MGNTisSelected) {
       this.hex1.style.backgroundImage = "url('./shared/hex.png')";
+      this.removedMGNT = this.MGNT;
       this.scene.remove(this.MGNT);
       this.MGNTisSelected = false;
+      this.MGNT = this.originalMGNT;
       this.updateObjectState();
     } else {
       this.hex1.style.backgroundImage = "url('./shared/filledHex.png')";
@@ -234,24 +242,18 @@ class App {
           break;
       }
 
-      console.log(this.reticle.visible);
-
       if (modelToAdd) {
         modelToAdd.position.copy(this.firstObjectPosition);
         modelToAdd.rotation.copy(this.sharedRotation);
         modelToAdd.scale.copy(this.sharedScale);
     
         this.scene.add(modelToAdd);
+        this.MGNT = modelToAdd;
+        // this.attachEventListeners(modelToAdd);
         this.MGNTisSelected = true;
         this.hasObjects = true; 
 
         this.updateCutButtonStyles();
-      } else {
-        console.log(this.reticle.position);
-        console.log(this.firstObjectPosition);
-        console.error('modelToAdd is undefined');
-        // console.log(this.currentCutState);
-        // console.log(modelToAdd);
       }
     }
   };
@@ -261,6 +263,7 @@ class App {
       this.hex2.style.backgroundImage = "url('./shared/hex.png')";
       this.scene.remove(this.Cal);
       this.CalisSelected = false;
+      this.Cal = this.originalCal;
       this.updateObjectState(); 
     } else {
       this.hex2.style.backgroundImage = "url('./shared/filledHex.png')";
@@ -288,6 +291,7 @@ class App {
       modelToAdd.scale.copy(this.sharedScale);
   
       this.scene.add(modelToAdd);
+      this.Cal = modelToAdd;
       this.CalisSelected = true;
       this.hasObjects = true; 
 
@@ -300,6 +304,7 @@ class App {
       this.hex3.style.backgroundImage = "url('./shared/hex.png')";
       this.scene.remove(this.ITK);
       this.ITKisSelected = false;
+      this.ITK = this.originalITK;
       this.updateObjectState(); 
     } else {
       this.hex3.style.backgroundImage = "url('./shared/filledHex.png')";
@@ -327,6 +332,7 @@ class App {
       modelToAdd.scale.copy(this.sharedScale);
   
       this.scene.add(modelToAdd);
+      this.ITK = modelToAdd;
       this.ITKisSelected = true;
       this.hasObjects = true;
 
@@ -339,6 +345,7 @@ class App {
       this.hex4.style.backgroundImage = "url('./shared/hex.png')";
       this.scene.remove(this.Muon);
       this.MuonisSelected = false;
+      this.Muon = this.originalMuon;
       this.updateObjectState(); 
     } else {
       this.hex4.style.backgroundImage = "url('./shared/filledHex.png')";
@@ -366,6 +373,7 @@ class App {
       modelToAdd.scale.copy(this.sharedScale);
   
       this.scene.add(modelToAdd);
+      this.Muon = modelToAdd;
       this.MuonisSelected = true;
       this.hasObjects = true; 
 
@@ -401,6 +409,8 @@ class App {
     const scale = this.sharedScale.clone();
   
     this.scene.remove(model);
+    this.scene.remove(cut1Model);
+    this.scene.remove(cut2Model);
   
     let newModel;
     switch (this.currentCutState) {
@@ -442,18 +452,8 @@ class App {
       this.Muon = newModel;
       this.MuonisSelected = true;
     }
-
-    this.attachEventListeners(newModel);
   };
 
-  attachEventListeners = (model) => {
-    model.addEventListener('touchstart', this.onTouchStart);
-    model.addEventListener('touchmove', this.onTouchMove);
-    model.addEventListener('touchend', this.onTouchEnd);
-    model.addEventListener('mousedown', this.onMouseDown);
-    model.addEventListener('mousemove', this.onMouseMove);
-    model.addEventListener('mouseup', this.onMouseUp);
-  };
 
   updateCutButtonStyles = () => {
     this.cut1.style.backgroundImage = "url('./shared/hex.png')";
